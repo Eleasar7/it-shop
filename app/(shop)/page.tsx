@@ -1,9 +1,10 @@
 // app/(shop)/page.tsx
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   ChevronRight, Truck, Shield, RotateCcw, Phone,
-  Package, Building2, FileText, Tag, Zap, Star,
+  Building2, FileText, Tag, Zap, Star,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { serializeProducts } from "@/lib/serializers";
@@ -51,33 +52,21 @@ async function getHomeData() {
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
-const CAT_META: Record<string, { emoji: string; bg: string; border: string }> = {
-  laptops:      { emoji: "💻", bg: "bg-blue-50",   border: "border-blue-200" },
-  smartphones:  { emoji: "📱", bg: "bg-purple-50", border: "border-purple-200" },
-  tablets:      { emoji: "📟", bg: "bg-indigo-50", border: "border-indigo-200" },
-  netzwerk:     { emoji: "📡", bg: "bg-green-50",  border: "border-green-200" },
-  server:       { emoji: "🖥️", bg: "bg-gray-50",   border: "border-gray-200" },
-  monitore:     { emoji: "🖥️", bg: "bg-cyan-50",   border: "border-cyan-200" },
-  speicher:     { emoji: "💾", bg: "bg-orange-50", border: "border-orange-200" },
-  zubehoer:     { emoji: "🔌", bg: "bg-yellow-50", border: "border-yellow-200" },
-  "it-services":{ emoji: "🛠️", bg: "bg-red-50",    border: "border-red-200" },
-};
-
 const FALLBACK_CATS = [
-  { id:"1", slug:"laptops",     name:"Laptops",      _count:{products:0} },
-  { id:"2", slug:"smartphones", name:"Smartphones",  _count:{products:0} },
-  { id:"3", slug:"tablets",     name:"Tablets",      _count:{products:0} },
-  { id:"4", slug:"netzwerk",    name:"Netzwerk",     _count:{products:0} },
-  { id:"5", slug:"server",      name:"Server",       _count:{products:0} },
-  { id:"6", slug:"monitore",    name:"Monitore",     _count:{products:0} },
-  { id:"7", slug:"speicher",    name:"Speicher",     _count:{products:0} },
-  { id:"8", slug:"zubehoer",    name:"Zubehör",      _count:{products:0} },
-  { id:"9", slug:"it-services", name:"IT-Services",  _count:{products:0} },
+  { id: "1", slug: "laptops",     name: "Laptops",      imageUrl: null, _count: { products: 0 } },
+  { id: "2", slug: "smartphones", name: "Smartphones",  imageUrl: null, _count: { products: 0 } },
+  { id: "3", slug: "tablets",     name: "Tablets",      imageUrl: null, _count: { products: 0 } },
+  { id: "4", slug: "netzwerk",    name: "Netzwerk",     imageUrl: null, _count: { products: 0 } },
+  { id: "5", slug: "server",      name: "Server",       imageUrl: null, _count: { products: 0 } },
+  { id: "6", slug: "monitore",    name: "Monitore",     imageUrl: null, _count: { products: 0 } },
+  { id: "7", slug: "speicher",    name: "Speicher",     imageUrl: null, _count: { products: 0 } },
+  { id: "8", slug: "zubehoer",    name: "Zubehör",      imageUrl: null, _count: { products: 0 } },
+  { id: "9", slug: "it-services", name: "IT-Services",  imageUrl: null, _count: { products: 0 } },
 ];
 
 const BRANDS = [
-  "Apple","Lenovo","HP","Dell","ASUS","MSI","Samsung","NVIDIA","Intel",
-  "AMD","Microsoft","Logitech","Synology","Ubiquiti","Acer",
+  "Apple", "Lenovo", "HP", "Dell", "ASUS", "MSI", "Samsung", "NVIDIA", "Intel",
+  "AMD", "Microsoft", "Logitech", "Synology", "Ubiquiti", "Acer",
 ];
 
 const TRUST_ITEMS = [
@@ -86,6 +75,50 @@ const TRUST_ITEMS = [
   { icon: RotateCcw, label: "30 Tage Rückgabe",  sub: "Kostenlos & unkompliziert" },
   { icon: Phone,     label: "B2B-Hotline",        sub: "Mo–Fr 8–18 Uhr" },
 ];
+
+// ─── Category Card ─────────────────────────────────────────────────────────────
+
+function CategoryCard({
+  cat,
+}: {
+  cat: { id: string; slug: string; name: string; imageUrl: string | null; _count?: { products: number } };
+}) {
+  return (
+    <Link
+      href={`/products?category=${cat.slug}`}
+      className="group flex flex-col bg-white border border-[#e2e8f0] rounded-lg overflow-hidden hover:shadow-md hover:border-[#c7d9fb] transition-all duration-200"
+    >
+      {/* Image area — 155px, object-contain, white bg */}
+      <div className="relative bg-white border-b border-[#f1f5f9]" style={{ height: 155 }}>
+        {cat.imageUrl ? (
+          <Image
+            src={cat.imageUrl}
+            alt={cat.name}
+            fill
+            className="object-contain p-3 group-hover:scale-[1.03] transition-transform duration-300"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
+          />
+        ) : (
+          /* No-image placeholder — neutral, no emoji, no icon */
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 select-none">
+            <div className="w-12 h-12 rounded border border-dashed border-[#d1d5db] bg-[#f9fafb]" />
+            <span className="text-[10px] text-[#9ca3af] font-medium tracking-wide">Kein Bild</span>
+          </div>
+        )}
+      </div>
+
+      {/* Label */}
+      <div className="px-3 py-2.5">
+        <p className="text-[12px] font-bold text-gray-800 group-hover:text-[#1a56db] transition-colors leading-tight truncate">
+          {cat.name}
+        </p>
+        {(cat._count?.products ?? 0) > 0 && (
+          <p className="text-[10px] text-gray-400 mt-0.5">{cat._count!.products} Artikel</p>
+        )}
+      </div>
+    </Link>
+  );
+}
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -96,7 +129,7 @@ export default async function HomePage() {
   return (
     <div className="bg-[#f8f9fa]">
 
-      {/* ── HERO / CATEGORY STRIP — compact, above-the-fold ── */}
+      {/* ── HERO / CATEGORY STRIP ── */}
       <section className="bg-white border-b border-[#e8eaed]">
         <div className="section py-5">
           <div className="flex flex-col md:flex-row gap-6 items-start">
@@ -122,7 +155,6 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              {/* Mini stats */}
               <div className="grid grid-cols-2 gap-3 mt-5 pt-5 border-t border-[#e8eaed]">
                 {[
                   { v: "10.000+", l: "Produkte" },
@@ -138,26 +170,13 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Right: category grid — immediately visible */}
+            {/* Right: category grid — REAL images */}
             <div className="flex-1">
-              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2">Kategorien</p>
-              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2">
-                {displayCats.slice(0, 10).map((cat) => {
-                  const meta = CAT_META[cat.slug] ?? { emoji: "📦", bg: "bg-gray-50", border: "border-gray-200" };
-                  return (
-                    <Link
-                      key={cat.id}
-                      href={`/products?category=${cat.slug}`}
-                      className={`${meta.bg} border ${meta.border} rounded-lg p-3 flex flex-col items-center gap-1.5 text-center hover:shadow-sm hover:-translate-y-0.5 transition-all group`}
-                    >
-                      <span className="text-xl">{meta.emoji}</span>
-                      <span className="text-[11px] font-semibold text-gray-700 group-hover:text-[#1a56db] transition-colors leading-tight">{cat.name}</span>
-                      {cat._count?.products > 0 && (
-                        <span className="text-[9px] text-gray-400">{cat._count.products} Artikel</span>
-                      )}
-                    </Link>
-                  );
-                })}
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Kategorien</p>
+              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2.5">
+                {displayCats.slice(0, 10).map((cat) => (
+                  <CategoryCard key={cat.id} cat={cat} />
+                ))}
               </div>
             </div>
           </div>
@@ -185,7 +204,6 @@ export default async function HomePage() {
       <div className="section py-5">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="sm:col-span-2 bg-[#1a56db] rounded-lg p-5 flex items-center justify-between text-white overflow-hidden relative">
-            <div className="absolute right-4 top-0 bottom-0 flex items-center text-7xl opacity-10 select-none pointer-events-none">💻</div>
             <div className="relative">
               <div className="flex items-center gap-1.5 mb-1">
                 <Tag size={11} className="opacity-70" />
@@ -199,14 +217,13 @@ export default async function HomePage() {
               </Link>
             </div>
           </div>
-          <div className="bg-gray-900 rounded-lg p-5 flex items-center justify-between text-white overflow-hidden relative">
-            <div className="absolute right-3 top-0 bottom-0 flex items-center text-6xl opacity-10 select-none pointer-events-none">♻️</div>
+          <div className="bg-gray-900 rounded-lg p-5 flex items-center text-white overflow-hidden relative">
             <div className="relative">
               <div className="flex items-center gap-1.5 mb-1">
                 <Zap size={11} className="text-amber-400" />
                 <span className="text-[10px] font-bold uppercase tracking-wider opacity-70">B2B Angebot</span>
               </div>
-              <p className="text-base font-extrabold leading-snug">Refurbished<br/>bis 40% günstiger</p>
+              <p className="text-base font-extrabold leading-snug">Refurbished<br />bis 40% günstiger</p>
               <p className="text-xs opacity-60 mt-0.5 mb-3">Zertifiziert & geprüft</p>
               <Link href="/products"
                 className="inline-flex items-center gap-1 bg-white/15 text-white text-xs font-bold px-3 py-1.5 rounded border border-white/20 hover:bg-white/25 transition-colors">
@@ -304,13 +321,12 @@ export default async function HomePage() {
             </div>
             <div className="grid grid-cols-2 gap-2 flex-shrink-0">
               {[
-                { v: "2.400+", l: "B2B-Partner",  icon: "🏢" },
-                { v: "24h",    l: "Angebot",       icon: "⚡" },
-                { v: "99,8%",  l: "Zufriedenheit", icon: "⭐" },
-                { v: "15 J.",  l: "Erfahrung",     icon: "🏆" },
-              ].map(({ v, l, icon }) => (
+                { v: "2.400+", l: "B2B-Partner" },
+                { v: "24h",    l: "Angebot" },
+                { v: "99,8%",  l: "Zufriedenheit" },
+                { v: "15 J.", l: "Erfahrung" },
+              ].map(({ v, l }) => (
                 <div key={l} className="bg-[#f8f9fa] border border-[#e8eaed] rounded-lg p-3 text-center min-w-[90px]">
-                  <div className="text-lg mb-0.5">{icon}</div>
                   <p className="text-sm font-extrabold text-gray-900">{v}</p>
                   <p className="text-[10px] text-gray-500">{l}</p>
                 </div>

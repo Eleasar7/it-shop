@@ -15,7 +15,7 @@ import { useCompareStore } from "@/store/compare";
 import { createClient } from "@/lib/supabase/client";
 import type { UserProfile } from "@/types";
 
-// ─── Mega-menu category data ──────────────────────────────────────────────────
+// ─── Mega-menu category data — NO emojis, clean text navigation ──────────────
 
 interface NavChild {
   label: string;
@@ -24,7 +24,6 @@ interface NavChild {
 
 interface NavCategory {
   label: string;
-  icon: string;
   href: string;
   columns: Array<{ heading: string; items: NavChild[] }>;
   featured?: { label: string; href: string; badge?: string };
@@ -33,7 +32,6 @@ interface NavCategory {
 const NAV: NavCategory[] = [
   {
     label: "Laptops & PCs",
-    icon: "💻",
     href: "/products?category=laptops",
     columns: [
       {
@@ -68,34 +66,33 @@ const NAV: NavCategory[] = [
   },
   {
     label: "Komponenten",
-    icon: "⚙️",
     href: "/products",
     columns: [
       {
         heading: "Prozessoren & RAM",
         items: [
-          { label: "Intel Prozessoren",  href: "/products?brand=Intel" },
-          { label: "AMD Prozessoren",    href: "/products?brand=AMD" },
-          { label: "DDR5 Arbeitsspeicher",href: "/products" },
-          { label: "DDR4 Arbeitsspeicher",href: "/products" },
+          { label: "Intel Prozessoren",   href: "/products?brand=Intel" },
+          { label: "AMD Prozessoren",     href: "/products?brand=AMD" },
+          { label: "DDR5 Arbeitsspeicher", href: "/products" },
+          { label: "DDR4 Arbeitsspeicher", href: "/products" },
         ],
       },
       {
         heading: "Grafik & Speicher",
         items: [
-          { label: "NVIDIA Grafikkarten",href: "/products?brand=NVIDIA" },
-          { label: "AMD Grafikkarten",   href: "/products?brand=AMD" },
-          { label: "NVMe SSDs",          href: "/products" },
-          { label: "SATA SSDs & HDDs",   href: "/products" },
+          { label: "NVIDIA Grafikkarten", href: "/products?brand=NVIDIA" },
+          { label: "AMD Grafikkarten",    href: "/products?brand=AMD" },
+          { label: "NVMe SSDs",           href: "/products" },
+          { label: "SATA SSDs & HDDs",    href: "/products" },
         ],
       },
       {
         heading: "Mainboard & Gehäuse",
         items: [
-          { label: "Mainboards",         href: "/products" },
-          { label: "PC-Gehäuse",         href: "/products" },
-          { label: "Netzteile",          href: "/products" },
-          { label: "Kühlsysteme",        href: "/products" },
+          { label: "Mainboards",          href: "/products" },
+          { label: "PC-Gehäuse",          href: "/products" },
+          { label: "Netzteile",           href: "/products" },
+          { label: "Kühlsysteme",         href: "/products" },
         ],
       },
     ],
@@ -103,274 +100,251 @@ const NAV: NavCategory[] = [
   },
   {
     label: "Server & Netzwerk",
-    icon: "🖥️",
     href: "/products",
     columns: [
       {
         heading: "Server",
         items: [
-          { label: "Rack-Server",        href: "/products" },
-          { label: "Tower-Server",       href: "/products" },
-          { label: "Blade-Server",       href: "/products" },
-          { label: "NAS-Systeme",        href: "/products?brand=Synology" },
+          { label: "Rack-Server",         href: "/products" },
+          { label: "Tower-Server",        href: "/products" },
+          { label: "Blade-Server",        href: "/products" },
+          { label: "NAS-Systeme",         href: "/products?brand=Synology" },
         ],
       },
       {
         heading: "Netzwerk",
         items: [
-          { label: "Managed Switches",   href: "/products?category=netzwerk" },
-          { label: "Router & Firewalls", href: "/products?category=netzwerk" },
-          { label: "WLAN Access Points", href: "/products?category=netzwerk" },
-          { label: "Ubiquiti UniFi",     href: "/products?brand=Ubiquiti" },
+          { label: "Managed Switches",    href: "/products?category=netzwerk" },
+          { label: "Router & Firewalls",  href: "/products?category=netzwerk" },
+          { label: "WLAN Access Points",  href: "/products?category=netzwerk" },
+          { label: "Ubiquiti UniFi",      href: "/products?brand=Ubiquiti" },
         ],
       },
       {
         heading: "Infrastruktur",
         items: [
-          { label: "USV / Stromversorgung",href: "/products" },
-          { label: "Rack & Schränke",    href: "/products" },
-          { label: "Kabel & SFP",        href: "/products" },
-          { label: "KVM-Switches",       href: "/products" },
+          { label: "USV / Stromversorgung", href: "/products" },
+          { label: "Rack & Schränke",     href: "/products" },
+          { label: "Kabel & SFP",         href: "/products" },
+          { label: "KVM-Switches",        href: "/products" },
         ],
       },
     ],
     featured: { label: "Server & Netzwerk →", href: "/products" },
   },
   {
-    label: "Smartphones",
-    icon: "📱",
+    label: "Smartphones & Tablets",
     href: "/products?category=smartphones",
     columns: [
       {
         heading: "Apple",
         items: [
-          { label: "iPhone 16 Serie",    href: "/products?category=smartphones&brand=Apple" },
-          { label: "iPhone 15 Serie",    href: "/products?category=smartphones&brand=Apple" },
-          { label: "iPad Pro",           href: "/products?category=tablets&brand=Apple" },
-          { label: "iPad Air / Mini",    href: "/products?category=tablets&brand=Apple" },
+          { label: "iPhone 16 Serie",     href: "/products?category=smartphones&brand=Apple" },
+          { label: "iPhone 15 Serie",     href: "/products?category=smartphones&brand=Apple" },
+          { label: "iPad Pro",            href: "/products?category=tablets&brand=Apple" },
+          { label: "iPad Air / Mini",     href: "/products?category=tablets&brand=Apple" },
         ],
       },
       {
         heading: "Android",
         items: [
-          { label: "Samsung Galaxy S",   href: "/products?category=smartphones&brand=Samsung" },
-          { label: "Samsung Galaxy A",   href: "/products?category=smartphones&brand=Samsung" },
-          { label: "Android Tablets",    href: "/products?category=tablets" },
-          { label: "Alle Smartphones",   href: "/products?category=smartphones" },
-        ],
-      },
-      {
-        heading: "Zubehör",
-        items: [
-          { label: "Schutzhüllen",       href: "/products?category=zubehoer" },
-          { label: "Ladegeräte",         href: "/products?category=zubehoer" },
-          { label: "Kopfhörer & Earbuds",href: "/products?category=zubehoer" },
-          { label: "Smartwatches",       href: "/products?category=zubehoer" },
+          { label: "Samsung Galaxy",      href: "/products?category=smartphones&brand=Samsung" },
+          { label: "Business Smartphones", href: "/products?category=smartphones" },
+          { label: "Android Tablets",     href: "/products?category=tablets" },
+          { label: "Rugged Devices",      href: "/products?category=smartphones" },
         ],
       },
     ],
     featured: { label: "Alle Smartphones & Tablets →", href: "/products?category=smartphones" },
   },
   {
-    label: "Monitore & Peripherie",
-    icon: "🖥️",
-    href: "/products",
+    label: "Monitore & Displays",
+    href: "/products?category=monitore",
     columns: [
       {
-        heading: "Monitore",
+        heading: "Business",
         items: [
-          { label: "24\" Business",      href: "/products" },
-          { label: "27\" & 32\" QHD/4K", href: "/products" },
-          { label: "Curved Monitore",    href: "/products" },
-          { label: "Touchscreen",        href: "/products" },
+          { label: "24–27 Zoll",          href: "/products?category=monitore" },
+          { label: "Ultra-Wide",          href: "/products?category=monitore" },
+          { label: "4K-Monitore",         href: "/products?category=monitore" },
+          { label: "Dual-Monitor Sets",   href: "/products?category=monitore" },
         ],
       },
       {
-        heading: "Eingabe & Audio",
+        heading: "Zubehör",
         items: [
-          { label: "Tastaturen",         href: "/products?category=zubehoer" },
-          { label: "Mäuse",              href: "/products?category=zubehoer" },
-          { label: "Headsets",           href: "/products?category=zubehoer" },
-          { label: "Webcams",            href: "/products?category=zubehoer" },
-        ],
-      },
-      {
-        heading: "Drucker & Scanner",
-        items: [
-          { label: "Laserdrucker",       href: "/products" },
-          { label: "Tintenstrahldrucker",href: "/products" },
-          { label: "Multifunktionsgeräte",href: "/products" },
-          { label: "Scanner",            href: "/products" },
+          { label: "Monitor-Arme",        href: "/products?category=zubehoer" },
+          { label: "KVM-Switches",        href: "/products" },
+          { label: "Docking Stations",    href: "/products?category=zubehoer" },
+          { label: "Kabel & Adapter",     href: "/products?category=zubehoer" },
         ],
       },
     ],
-    featured: { label: "Alle Monitore & Peripherie →", href: "/products" },
+    featured: { label: "Alle Monitore →", href: "/products?category=monitore" },
   },
   {
-    label: "Software",
-    icon: "💾",
-    href: "/products",
+    label: "Zubehör & Services",
+    href: "/products?category=zubehoer",
     columns: [
       {
-        heading: "Microsoft",
+        heading: "Peripherie",
         items: [
-          { label: "Microsoft 365",      href: "/products?brand=Microsoft" },
-          { label: "Windows 11",         href: "/products?brand=Microsoft" },
-          { label: "Windows Server",     href: "/products?brand=Microsoft" },
-          { label: "MS Office (OEM)",    href: "/products?brand=Microsoft" },
+          { label: "Tastaturen & Mäuse",  href: "/products?category=zubehoer" },
+          { label: "Headsets",            href: "/products?category=zubehoer" },
+          { label: "Webcams",             href: "/products?category=zubehoer" },
+          { label: "Drucker & Scanner",   href: "/products?category=zubehoer" },
         ],
       },
       {
-        heading: "Sicherheit & Backup",
+        heading: "IT-Services",
         items: [
-          { label: "Antivirussoftware",  href: "/products" },
-          { label: "Endpoint Security",  href: "/products" },
-          { label: "Backup-Lösungen",    href: "/products" },
-          { label: "VPN-Software",       href: "/products" },
+          { label: "Garantie-Verlängerung", href: "/products?category=it-services" },
+          { label: "Rollout-Services",     href: "/products?category=it-services" },
+          { label: "Hardware-Reparatur",   href: "/products?category=it-services" },
+          { label: "IT-Beratung",          href: "/beratung" },
         ],
       },
     ],
-    featured: { label: "Alle Software & Lizenzen →", href: "/products", badge: "B2B Volumenlizenzen" },
+    featured: { label: "Alle Services →", href: "/products?category=it-services" },
   },
 ];
 
-// ─── Live search hook ─────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-function useSearch() {
-  const [query, setQuery]       = useState("");
-  const [results, setResults]   = useState<Array<{ id: string; name: string; slug: string; price: number; brand: string }>>([]);
-  const [loading, setLoading]   = useState(false);
-  const [focused, setFocused]   = useState(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const search = useCallback(async (q: string) => {
-    if (q.trim().length < 2) { setResults([]); return; }
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/products?search=${encodeURIComponent(q)}&pageSize=6`);
-      if (res.ok) {
-        const data = await res.json();
-        setResults((data.data ?? []).slice(0, 6));
-      }
-    } catch { /* silently ignore */ }
-    setLoading(false);
-  }, []);
-
-  useEffect(() => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    if (query.trim().length >= 2) {
-      timerRef.current = setTimeout(() => search(query), 300);
-    } else {
-      setResults([]);
-    }
-    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [query, search]);
-
-  return { query, setQuery, results, loading, focused, setFocused };
+interface SearchResult {
+  id: string;
+  name: string;
+  slug: string;
+  brand?: string;
+  price: number;
 }
 
-// ─── Header ───────────────────────────────────────────────────────────────────
+const fmt = (n: number) =>
+  new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(n);
 
-interface HeaderProps {
-  user?: UserProfile | null;
-}
+// ─── Component ────────────────────────────────────────────────────────────────
 
-export function Header({ user }: HeaderProps) {
+export function Header() {
   const router = useRouter();
-  const [mobileOpen,    setMobileOpen]    = useState(false);
-  const [mobileExpanded,setMobileExpanded]= useState<string | null>(null);
-  const [activeMenu,    setActiveMenu]    = useState<string | null>(null);
-  const [userMenuOpen,  setUserMenuOpen]  = useState(false);
-  // Mounted guard — prevents hydration mismatch from Zustand/localStorage.
-  // Before mount, cart count is 0 on both server and client.
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [focused, setFocused] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const menuTimer    = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const searchRef    = useRef<HTMLDivElement>(null);
 
-  const { query, setQuery, results, loading, focused, setFocused } = useSearch();
+  const searchRef = useRef<HTMLDivElement>(null);
+  const menuTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { openCart } = useCartStore();
+  const compareCount = 0;
 
-  const itemCount = useCartStore((s) => s.getItemCount());
-  const openCart  = useCartStore((s) => s.openCart);
-  const compareCount = useCompareStore((s) => s.items.length);
+  useEffect(() => { setMounted(true); }, []);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    setFocused(false);
-    router.push(`/products?search=${encodeURIComponent(query.trim())}`);
-    setQuery("");
-  };
-
-  const handleLogout = async () => {
-    const sb = createClient();
-    await sb.auth.signOut();
-    router.push("/");
-    router.refresh();
-  };
-
-  const openMenu  = (label: string) => {
-    if (menuTimer.current) clearTimeout(menuTimer.current);
-    setActiveMenu(label);
-  };
-  const closeMenu = () => {
-    menuTimer.current = setTimeout(() => setActiveMenu(null), 150);
-  };
-
+  // Load user
   useEffect(() => {
-    const fn = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { setMobileOpen(false); setActiveMenu(null); setFocused(false); }
-    };
-    document.addEventListener("keydown", fn);
-    return () => document.removeEventListener("keydown", fn);
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data: { user: u } }) => {
+      if (!u) return;
+      const res = await fetch("/api/account/profile");
+      if (res.ok) setUser(await res.json());
+    });
   }, []);
 
-  // Set mounted after first client render so cart/compare counts from
-  // Zustand (persisted in localStorage) are only read after hydration.
-  useEffect(() => { setMounted(true); }, []);
+  // Live search
+  useEffect(() => {
+    if (!query.trim() || query.length < 2) {
+      setResults([]);
+      setShowSuggestions(false);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/products?search=${encodeURIComponent(query)}&limit=5`);
+        if (res.ok) {
+          const data = await res.json();
+          setResults(data.products ?? []);
+          setShowSuggestions(true);
+        }
+      } finally {
+        setLoading(false);
+      }
+    }, 220);
+    return () => clearTimeout(timer);
+  }, [query]);
 
   // Close search on outside click
   useEffect(() => {
-    const fn = (e: MouseEvent) => {
+    function handler(e: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
         setFocused(false);
+        setShowSuggestions(false);
       }
-    };
-    document.addEventListener("mousedown", fn);
-    return () => document.removeEventListener("mousedown", fn);
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const fmt = (n: number) => new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(n);
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/products?search=${encodeURIComponent(query.trim())}`);
+      setFocused(false);
+      setShowSuggestions(false);
+    }
+  }
 
-  const showSuggestions = focused && (results.length > 0 || (query.trim().length >= 2 && !loading));
+  const openMenu = useCallback((label: string) => {
+    if (menuTimerRef.current) clearTimeout(menuTimerRef.current);
+    setActiveMenu(label);
+  }, []);
+
+  const closeMenu = useCallback(() => {
+    menuTimerRef.current = setTimeout(() => setActiveMenu(null), 120);
+  }, []);
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setUser(null);
+    router.push("/");
+  }
 
   return (
     <>
-      {/* ── TOPBAR ── */}
-      <div className="hidden lg:block bg-[#1e293b] text-slate-300 text-[11px]">
-        <div className="section flex items-center justify-between h-7 gap-6">
-          <div className="flex items-center divide-x divide-slate-600/40">
-            <span className="flex items-center gap-1.5 pr-4">
-              <Truck size={10} className="text-green-400" />
-              Gratis-Versand ab 99 €
-            </span>
-            <span className="flex items-center gap-1.5 px-4">
-              <Phone size={10} className="text-blue-400" />
-              B2B-Hotline: <strong className="text-white ml-1">+49 30 123 456 789</strong>
-            </span>
-            <span className="flex items-center gap-1.5 px-4">
-              <Clock size={10} className="text-slate-400" />
-              Mo–Fr 8–18 Uhr
-            </span>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5">
-              <Shield size={10} className="text-green-400" /> 30 Tage Rückgabe
-            </span>
-            <span className="text-slate-600">|</span>
-            <Link href="/beratung" className="hover:text-white transition-colors">Kaufberatung</Link>
-            <Link href="/b2b" className="text-blue-400 font-semibold hover:text-blue-300 transition-colors">
-              B2B & Firmenkunden
-            </Link>
+      {/* ── TOP BAR ── */}
+      <div className="hidden md:block bg-[#0f172a] text-[#94a3b8] text-[11px]">
+        <div className="section">
+          <div className="flex items-center justify-between h-8">
+            <div className="flex items-center divide-x divide-[#1e293b]">
+              <span className="flex items-center gap-1.5 px-4">
+                <Truck size={10} className="text-green-400" />
+                Gratis-Versand ab 99 €
+              </span>
+              <span className="flex items-center gap-1.5 px-4">
+                <Phone size={10} className="text-blue-400" />
+                B2B-Hotline: <strong className="text-white ml-1">+49 30 123 456 789</strong>
+              </span>
+              <span className="flex items-center gap-1.5 px-4">
+                <Clock size={10} className="text-slate-400" />
+                Mo–Fr 8–18 Uhr
+              </span>
+            </div>
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-1.5">
+                <Shield size={10} className="text-green-400" /> 30 Tage Rückgabe
+              </span>
+              <span className="text-slate-600">|</span>
+              <Link href="/beratung" className="hover:text-white transition-colors">Kaufberatung</Link>
+              <Link href="/b2b" className="text-blue-400 font-semibold hover:text-blue-300 transition-colors">
+                B2B & Firmenkunden
+              </Link>
+            </div>
           </div>
         </div>
       </div>
@@ -416,7 +390,7 @@ export function Header({ user }: HeaderProps) {
                 </div>
               </form>
 
-              {/* Live search suggestions */}
+              {/* Live suggestions */}
               {showSuggestions && (
                 <div className="absolute top-full left-0 right-0 mt-0.5 bg-white border border-[#e2e8f0] rounded shadow-xl z-50 overflow-hidden">
                   {results.length > 0 ? (
@@ -441,7 +415,7 @@ export function Header({ user }: HeaderProps) {
                       ))}
                       <Link
                         href={`/products?search=${encodeURIComponent(query)}`}
-                        onClick={() => { setFocused(false); }}
+                        onClick={() => setFocused(false)}
                         className="flex items-center justify-center gap-1.5 px-3 py-2.5 bg-[#f8fafc] text-xs font-semibold text-[#1a56db] hover:bg-[#eff4ff] transition-colors"
                       >
                         Alle Ergebnisse für „{query}" anzeigen <ChevronRight size={12} />
@@ -534,18 +508,15 @@ export function Header({ user }: HeaderProps) {
 
               {/* Cart */}
               <button
-                onClick={() => { openCart(); setFocused(false); }}
-                className="relative flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded text-gray-600 hover:bg-gray-100 transition-colors"
-                aria-label={`Warenkorb (${mounted ? itemCount : 0})`}
-              >
-                <ShoppingCart size={19} />
-                <span className="text-[9px] font-medium hidden sm:block">Warenkorb</span>
-                {mounted && itemCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 min-w-[16px] h-4 bg-[#c5221f] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1">
-                    {itemCount > 99 ? "99+" : itemCount}
-                  </span>
-                )}
-              </button>
+  onClick={() => { openCart(); setFocused(false); }}
+  className="relative flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded text-gray-600 hover:bg-gray-100 transition-colors"
+  aria-label="Warenkorb"
+>
+  <ShoppingCart size={19} />
+  <span className="text-[9px] font-medium hidden sm:block">
+    Warenkorb
+  </span>
+</button>
 
               {/* Mobile hamburger */}
               <button
@@ -559,7 +530,7 @@ export function Header({ user }: HeaderProps) {
           </div>
         </div>
 
-        {/* ── CATEGORY NAV with REAL MEGA MENUS ── */}
+        {/* ── CATEGORY NAV — clean text, no emojis ── */}
         <nav className="hidden md:block border-t border-[#f1f5f9] bg-white relative z-40">
           <div className="section">
             <div className="flex items-center">
@@ -572,13 +543,12 @@ export function Header({ user }: HeaderProps) {
                 >
                   <Link
                     href={cat.href}
-                    className={`flex items-center gap-1.5 px-3.5 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors border-b-2 -mb-px ${
+                    className={`flex items-center gap-1 px-3.5 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors border-b-2 -mb-px ${
                       activeMenu === cat.label
                         ? "text-[#1a56db] border-[#1a56db] bg-[#f8faff]"
                         : "text-[#334155] border-transparent hover:text-[#1a56db] hover:bg-[#f8faff]"
                     }`}
                   >
-                    <span className="text-base">{cat.icon}</span>
                     {cat.label}
                     <ChevronDown size={11} className={`text-gray-400 transition-transform ${activeMenu === cat.label ? "rotate-180" : ""}`} />
                   </Link>
@@ -652,7 +622,6 @@ export function Header({ user }: HeaderProps) {
         {mobileOpen && (
           <div className="md:hidden border-t border-[#f1f5f9] bg-white max-h-[80vh] overflow-y-auto">
             <div className="py-2">
-              {/* Mobile search */}
               <div className="px-4 pb-3 border-b border-[#f1f5f9]">
                 <form onSubmit={(e) => { handleSearch(e); setMobileOpen(false); }}>
                   <div className="flex border border-[#cbd5e1] rounded overflow-hidden">
@@ -670,17 +639,14 @@ export function Header({ user }: HeaderProps) {
                 </form>
               </div>
 
-              {/* Mobile categories — expandable */}
+              {/* Mobile categories — text only, no emojis */}
               {NAV.map((cat) => (
                 <div key={cat.label} className="border-b border-[#f8fafc] last:border-none">
                   <button
                     onClick={() => setMobileExpanded(mobileExpanded === cat.label ? null : cat.label)}
                     className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-800 hover:bg-[#f8fafc] transition-colors"
                   >
-                    <span className="flex items-center gap-2">
-                      <span className="text-base">{cat.icon}</span>
-                      {cat.label}
-                    </span>
+                    <span>{cat.label}</span>
                     <ChevronDown
                       size={14}
                       className={`text-gray-400 transition-transform ${mobileExpanded === cat.label ? "rotate-180" : ""}`}
@@ -719,7 +685,6 @@ export function Header({ user }: HeaderProps) {
                 </div>
               ))}
 
-              {/* Mobile account + actions */}
               <div className="px-4 py-3 border-t border-[#e2e8f0] flex flex-col gap-2 mt-1">
                 {user ? (
                   <>

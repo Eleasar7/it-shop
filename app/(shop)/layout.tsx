@@ -11,7 +11,7 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
 
   return (
     <div style={{ background: "#f8f9fa", minHeight: "100vh" }}>
-      <Header user={user} />
+      <Header />
       <main>{children}</main>
       <Footer />
       <CartDrawer />
