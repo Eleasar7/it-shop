@@ -12,8 +12,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://techcore-shop.de";
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "ZION IT – IT-Hardware Shop",
-    template: "%s | ZION IT",
+    default: "ENVETRA – IT-Hardware Shop",
+    template: "%s | ENVETRA",
   },
   description:
     "IT-Hardware für Business & Projekte. " +
@@ -34,8 +34,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "de_DE",
     url: BASE_URL,
-    siteName: "ZION IT",
-    title: "ZION IT – IT-Hardware Shop",
+    siteName: "ENVETRA",
+    title: "ENVETRA – IT-Hardware Shop",
     description:
       "IT-Hardware für Business & Projekte.",
     images: [
@@ -43,13 +43,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",      // Place a 1200×630 image in /public/og-image.png
         width: 1200,
         height: 630,
-        alt: "ZION IT – IT-Hardware Shop",
+        alt: "ENVETRA – IT-Hardware Shop",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ZION IT – IT-Hardware Shop",
+    title: "ENVETRA – IT-Hardware Shop",
     description: "IT-Hardware für Business & Projekte.",
     images: ["/og-image.png"],
   },

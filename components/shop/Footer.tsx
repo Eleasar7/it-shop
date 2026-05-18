@@ -72,7 +72,7 @@ export function Footer() {
                 IT
               </div>
               <div>
-                <div className="font-extrabold text-lg text-gray-900">ZION IT</div>
+                <div className="font-extrabold text-lg text-gray-900">ENTREVA</div>
                 <div className="text-[10px] text-[#1a56db] font-bold uppercase tracking-widest">Hardware Shop</div>
               </div>
             </Link>
@@ -81,9 +81,9 @@ export function Footer() {
             </p>
             <div className="space-y-2">
               {[
-                { icon: Phone, text: "+49 30 123 456 789", href: "tel:+4930123456789" },
-                { icon: Mail,  text: "sales@zion-it.de",  href: "mailto:sales@zion-it.de" },
-                { icon: MapPin,text: "Musterstr. 1, 10115 Berlin", href: null },
+                { icon: Phone, text: "+49 176 57719796", href: "tel:+4917657719796" },
+                { icon: Mail,  text: "entreva@sales.de",  href: "mailto:sales@entreva.de" },
+                { icon: MapPin,text: "Burgunder Platz 2, 67117 Limburgerhof", href: null },
               ].map(({ icon: Icon, text, href }) => (
                 <div key={text} className="flex items-center gap-2">
                   <Icon size={13} className="text-gray-400 flex-shrink-0" />
@@ -132,7 +132,7 @@ export function Footer() {
       <div className="border-t border-[#e8eaed] bg-white">
         <div className="section py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-gray-400">
-            © {new Date().getFullYear()} ZION IT GmbH · Alle Rechte vorbehalten
+            © {new Date().getFullYear()} ENVETRA · Alle Rechte vorbehalten
           </p>
           <div className="flex items-center gap-2 flex-wrap justify-center">
             {["Visa", "Mastercard", "SEPA", "Klarna", "PayPal"].map((m) => (

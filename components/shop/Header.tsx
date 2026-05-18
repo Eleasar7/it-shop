@@ -357,10 +357,10 @@ export function Header() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 flex-shrink-0 mr-1">
               <div className="w-8 h-8 bg-[#1a56db] rounded flex items-center justify-center text-white font-black text-xs leading-none select-none">
-                ZION<br className="hidden" />IT
+                ENVETRA<br className="hidden" />IT
               </div>
               <div className="hidden sm:block leading-none">
-                <div className="font-black text-[15px] tracking-tight text-gray-900">ZION IT</div>
+                <div className="font-black text-[15px] tracking-tight text-gray-900">ENVETRA</div>
                 <div className="text-[8px] text-[#1a56db] font-bold uppercase tracking-[0.15em]">Hardware Shop</div>
               </div>
             </Link>
