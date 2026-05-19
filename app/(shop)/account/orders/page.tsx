@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Package, ChevronRight, ShoppingBag, ArrowRight } from "lucide-react";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Meine Bestellungen | TechCore" };
+export const metadata: Metadata = { title: "Meine Bestellungen | Envetra" };
 
 const STATUS_BADGE: Record<string, string> = {
   PENDING:    "badge-warning",
@@ -54,23 +54,23 @@ export default async function OrdersPage() {
         <div>
           <Link
             href="/account"
-            className="text-xs text-gray-9000 hover:text-gray-700 transition-colors mb-2 inline-flex items-center gap-1"
+            className="text-xs text-gray-600 hover:text-gray-700 transition-colors mb-2 inline-flex items-center gap-1"
           >
             ← Konto
           </Link>
           <h1 className="text-2xl font-bold text-gray-900">Meine Bestellungen</h1>
-          <p className="text-gray-9000 text-sm mt-1">{orders.length} Bestellungen gesamt</p>
+          <p className="text-gray-600 text-sm mt-1">{orders.length} Bestellungen gesamt</p>
         </div>
       </div>
 
       {orders.length === 0 ? (
         <div className="card p-12 text-center space-y-5">
           <div className="w-16 h-16 rounded-2xl bg-gray-100/60 border border-slate-700/40 flex items-center justify-center mx-auto">
-            <ShoppingBag size={28} className="text-gray-9000" />
+            <ShoppingBag size={28} className="text-gray-600" />
           </div>
           <div>
             <p className="text-gray-700 font-medium text-lg">Noch keine Bestellungen</p>
-            <p className="text-gray-9000 text-sm mt-1">
+            <p className="text-gray-600 text-sm mt-1">
               Stöbere in unserem Sortiment und finde dein nächstes Gerät.
             </p>
           </div>
@@ -100,7 +100,7 @@ export default async function OrdersPage() {
                       <span className="badge badge-success text-[10px]">✓ Bezahlt</span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-9000 mt-1">
+                  <p className="text-xs text-gray-600 mt-1">
                     {new Date(order.createdAt).toLocaleDateString("de-DE", {
                       day: "2-digit", month: "long", year: "numeric",
                     })}
@@ -112,7 +112,7 @@ export default async function OrdersPage() {
                   <span className="text-sm font-bold text-gray-800 tabular-nums">
                     {fmt(Number(order.totalAmount))}
                   </span>
-                  <ChevronRight size={14} className="text-gray-9000 group-hover:text-gray-700 transition-colors" />
+                  <ChevronRight size={14} className="text-gray-600 group-hover:text-gray-700 transition-colors" />
                 </div>
               </Link>
             ))}

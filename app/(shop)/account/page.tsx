@@ -1,6 +1,7 @@
 // app/(shop)/account/page.tsx
 
 import { requireAuth } from "@/lib/auth";
+import { siteConfig } from "@/lib/site-config";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,7 +16,7 @@ import {
 import { LogoutButton } from "./LogoutButton";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Mein Konto | TechCore" };
+export const metadata: Metadata = { title: `Mein Konto | ${siteConfig.siteName}` };
 
 const STATUS_CONFIG: Record<string, { label: string; badge: string }> = {
   PENDING:    { label: "Ausstehend",     badge: "badge-warning" },
@@ -121,7 +122,7 @@ export default async function AccountPage() {
               <p className="text-base sm:text-lg font-bold text-gray-900 tabular-nums truncate">
                 {value}
               </p>
-              <p className="text-xs text-gray-9000 mt-0.5">{label}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{label}</p>
             </div>
           ))}
         </div>
@@ -163,7 +164,7 @@ export default async function AccountPage() {
           {orders.length > 0 && (
             <Link
               href="/account/orders"
-              className="text-xs text-[#1a56db] hover:text-indigo-300 flex items-center gap-1 transition-colors"
+              className="text-xs text-[#1a56db] hover:text-[#1043b2] flex items-center gap-1 transition-colors"
             >
               Alle anzeigen <ArrowRight size={12} />
             </Link>
@@ -173,11 +174,11 @@ export default async function AccountPage() {
         {orders.length === 0 ? (
           <div className="card p-10 text-center space-y-4">
             <div className="w-16 h-16 rounded-2xl bg-gray-100/60 border border-slate-700/40 flex items-center justify-center mx-auto">
-              <ShoppingBag size={28} className="text-gray-9000" />
+              <ShoppingBag size={28} className="text-gray-500" />
             </div>
             <div>
               <p className="text-gray-700 font-medium">Noch keine Bestellungen</p>
-              <p className="text-gray-9000 text-sm mt-1">
+              <p className="text-gray-500 text-sm mt-1">
                 Entdecke unsere Produkte und leg los!
               </p>
             </div>
@@ -208,7 +209,7 @@ export default async function AccountPage() {
                           {status.label}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-9000 mt-1.5">
+                      <p className="text-xs text-gray-500 mt-1.5">
                         {new Date(order.createdAt).toLocaleDateString("de-DE", {
                           day: "2-digit",
                           month: "long",
@@ -243,7 +244,7 @@ export default async function AccountPage() {
                           </div>
                         ))}
                         {order._count.items > 3 && (
-                          <span className="text-xs text-gray-9000 bg-[#f8f9fa] px-2.5 py-1 rounded-lg">
+                          <span className="text-xs text-gray-500 bg-[#f8f9fa] px-2.5 py-1 rounded-lg">
                             +{order._count.items - 3} weitere
                           </span>
                         )}
@@ -257,7 +258,7 @@ export default async function AccountPage() {
                       </p>
                       <ChevronRight
                         size={15}
-                        className="text-gray-9000 ml-auto mt-2"
+                        className="text-gray-500 ml-auto mt-2"
                       />
                     </div>
                   </div>
@@ -267,7 +268,7 @@ export default async function AccountPage() {
 
             <Link
               href="/account/orders"
-              className="flex items-center justify-center gap-2 w-full py-3 text-sm text-[#1a56db] hover:text-indigo-300 transition-colors card-hover rounded-xl"
+              className="flex items-center justify-center gap-2 w-full py-3 text-sm text-[#1a56db] hover:text-[#1043b2] transition-colors card-hover rounded-xl"
             >
               Alle Bestellungen anzeigen
               <ArrowRight size={14} />
@@ -285,7 +286,7 @@ export default async function AccountPage() {
           </h2>
           <Link
             href="/account/profile"
-            className="text-xs text-[#1a56db] hover:text-indigo-300 flex items-center gap-1 transition-colors"
+            className="text-xs text-[#1a56db] hover:text-[#1043b2] flex items-center gap-1 transition-colors"
           >
             Bearbeiten <ArrowRight size={11} />
           </Link>

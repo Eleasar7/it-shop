@@ -1,25 +1,11 @@
-// app/robots.ts
+import { siteConfig } from "@/lib/site-config";
+import type { MetadataRoute } from "next";
 
-import { MetadataRoute } from "next";
-
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://techcore-shop.de";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? siteConfig.siteUrl;
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: "/",
-        disallow: [
-          "/admin/",
-          "/account/",
-          "/checkout/",
-          "/api/",
-          "/auth/",
-        ],
-      },
-    ],
+    rules: { userAgent: "*", allow: "/" },
     sitemap: `${BASE_URL}/sitemap.xml`,
-    host: BASE_URL,
   };
 }

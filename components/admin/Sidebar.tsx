@@ -47,7 +47,7 @@ export function AdminSidebar({ user }: { user: UserProfile }) {
             <Cpu size={15} className="text-white" />
           </div>
           <div>
-            <span className="font-bold text-slate-100 text-sm tracking-tight">TechCore</span>
+            <span className="font-bold text-slate-100 text-sm tracking-tight">Envetra</span>
             <span className="block text-[10px] text-indigo-400 font-semibold uppercase tracking-wider -mt-0.5">Admin</span>
           </div>
         </Link>

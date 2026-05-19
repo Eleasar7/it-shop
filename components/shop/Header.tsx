@@ -4,6 +4,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import {
   Search, ShoppingCart, User, Menu, X, ChevronDown, ChevronRight,
@@ -13,6 +14,7 @@ import {
 import { useCartStore } from "@/store/cart";
 import { useCompareStore } from "@/store/compare";
 import { createClient } from "@/lib/supabase/client";
+import { siteConfig } from "@/lib/site-config";
 import type { UserProfile } from "@/types";
 
 // ─── Mega-menu category data — NO emojis, clean text navigation ──────────────
@@ -219,12 +221,31 @@ interface SearchResult {
   price: number;
 }
 
+interface HeaderProps {
+  /** Server-rendered initial user, avoids auth flash on first paint */
+  initialUser?: UserProfile | null;
+}
+
 const fmt = (n: number) =>
   new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(n);
 
+// ─── Logo — uses /public/logo.svg or /public/logo.png if present, else text ─
+
+/** Tries logo.svg → logo.png → text badge */
+function LogoImage() {
+  return (
+    <Image
+      src="/logo.png"
+      alt={siteConfig.siteName}
+      fill
+      className="object-contain object-left"
+      priority
+    />
+  );
+}
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function Header() {
+export function Header({ initialUser = null }: HeaderProps) {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -234,7 +255,8 @@ export function Header() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
-  const [user, setUser] = useState<UserProfile | null>(null);
+  // initialUser hydrates immediately — no auth flash
+  const [user, setUser] = useState<UserProfile | null>(initialUser);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -245,14 +267,17 @@ export function Header() {
 
   useEffect(() => { setMounted(true); }, []);
 
-  // Load user
+  // Re-validate auth client-side (keeps state fresh after login/logout without
+  // full page reload) — but only if initialUser is null (not yet known)
   useEffect(() => {
+    if (initialUser !== null) return; // already have server-provided user
     const supabase = createClient();
     supabase.auth.getUser().then(async ({ data: { user: u } }) => {
-      if (!u) return;
+      if (!u) { setUser(null); return; }
       const res = await fetch("/api/account/profile");
       if (res.ok) setUser(await res.json());
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Live search
@@ -328,11 +353,15 @@ export function Header() {
               </span>
               <span className="flex items-center gap-1.5 px-4">
                 <Phone size={10} className="text-blue-400" />
-                B2B-Hotline: <strong className="text-white ml-1">+49 176 57719796</strong>
+                B2B-Hotline:{" "}
+                <a href={`tel:${siteConfig.phone.replace(/\s/g, "")}`}
+                  className="text-white ml-1 font-semibold hover:text-blue-300 transition-colors">
+                  {siteConfig.phoneDisplay}
+                </a>
               </span>
               <span className="flex items-center gap-1.5 px-4">
                 <Clock size={10} className="text-slate-400" />
-                Mo–Fr 8–18 Uhr
+                {siteConfig.businessHours}
               </span>
             </div>
             <div className="flex items-center gap-4">
@@ -355,14 +384,8 @@ export function Header() {
           <div className="flex items-center gap-3 h-14">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 flex-shrink-0 mr-1">
-              <div className="w-8 h-8 bg-[#1a56db] rounded flex items-center justify-center text-white font-black text-xs leading-none select-none">
-                ENVETRA<br className="hidden" />IT
-              </div>
-              <div className="hidden sm:block leading-none">
-                <div className="font-black text-[15px] tracking-tight text-gray-900">ENVETRA</div>
-                <div className="text-[8px] text-[#1a56db] font-bold uppercase tracking-[0.15em]">Hardware Shop</div>
-              </div>
+            <Link href="/" className="relative flex items-center flex-shrink-0 mr-3 h-10 w-[130px]">
+              <LogoImage />
             </Link>
 
             {/* Search */}
@@ -418,12 +441,12 @@ export function Header() {
                         onClick={() => setFocused(false)}
                         className="flex items-center justify-center gap-1.5 px-3 py-2.5 bg-[#f8fafc] text-xs font-semibold text-[#1a56db] hover:bg-[#eff4ff] transition-colors"
                       >
-                        Alle Ergebnisse für „{query}" anzeigen <ChevronRight size={12} />
+                        Alle Ergebnisse für „{query}&#8221; anzeigen <ChevronRight size={12} />
                       </Link>
                     </>
                   ) : (
-                    <div className="px-4 py-5 text-center text-sm text-gray-500">
-                      Keine Produkte für „{query}" gefunden
+                    <div className="px-4 py-5 text-center text-sm text-gray-600">
+                      Keine Produkte für „{query}&#8221; gefunden
                     </div>
                   )}
                 </div>
@@ -463,7 +486,7 @@ export function Header() {
                     {user ? (
                       <>
                         <div className="px-4 py-3 border-b border-[#f1f5f9]">
-                          <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wide">Angemeldet als</p>
+                          <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">Angemeldet als</p>
                           <p className="text-sm font-semibold text-gray-900 truncate mt-0.5">{user.email}</p>
                         </div>
                         <Link href="/account" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-[#f8fafc]" onClick={() => setUserMenuOpen(false)}>
@@ -508,15 +531,15 @@ export function Header() {
 
               {/* Cart */}
               <button
-  onClick={() => { openCart(); setFocused(false); }}
-  className="relative flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded text-gray-600 hover:bg-gray-100 transition-colors"
-  aria-label="Warenkorb"
->
-  <ShoppingCart size={19} />
-  <span className="text-[9px] font-medium hidden sm:block">
-    Warenkorb
-  </span>
-</button>
+                onClick={() => { openCart(); setFocused(false); }}
+                className="relative flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded text-gray-600 hover:bg-gray-100 transition-colors"
+                aria-label="Warenkorb"
+              >
+                <ShoppingCart size={19} />
+                <span className="text-[9px] font-medium hidden sm:block">
+                  Warenkorb
+                </span>
+              </button>
 
               {/* Mobile hamburger */}
               <button
@@ -657,7 +680,7 @@ export function Header() {
                     <div className="bg-[#f8fafc] pb-2">
                       {cat.columns.map((col) => (
                         <div key={col.heading} className="px-4 pt-2">
-                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">{col.heading}</p>
+                          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">{col.heading}</p>
                           {col.items.map((item) => (
                             <Link
                               key={item.label}
@@ -690,6 +713,10 @@ export function Header() {
                   <>
                     <Link href="/account" onClick={() => setMobileOpen(false)}
                       className="btn-secondary justify-center text-sm">Mein Konto</Link>
+                    <Link href="/account/orders" onClick={() => setMobileOpen(false)}
+                      className="text-sm text-gray-700 font-medium text-center py-2 hover:bg-gray-50 rounded">
+                      Bestellungen
+                    </Link>
                     <button onClick={() => { handleLogout(); setMobileOpen(false); }}
                       className="text-sm text-red-600 font-medium text-center py-2 hover:bg-red-50 rounded">
                       Abmelden

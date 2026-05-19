@@ -456,7 +456,7 @@ export default function BeratungPage() {
             <Phone size={18} className="text-slate-500 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm font-semibold text-slate-300">Persönliche Beratung gewünscht?</p>
-              <p className="text-xs text-slate-600">Mo–Fr 8–18 Uhr · +49 711 123 4567</p>
+              <p className="text-xs text-slate-600">Mo–Fr 8–18 Uhr · +49 176 57719796</p>
             </div>
             <a href="tel:+4971112345467" className="btn-secondary text-xs px-3 py-2 flex-shrink-0">
               Anrufen

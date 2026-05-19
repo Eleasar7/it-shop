@@ -1,44 +1,46 @@
 // app/(shop)/impressum/page.tsx
 
 import { StaticPage, Section, P } from "@/components/shop/StaticPage";
+import { siteConfig } from "@/lib/site-config";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Impressum | TechCore" };
+export const metadata: Metadata = { title: `Impressum | ${siteConfig.siteName}` };
 
 export default function ImpressumPage() {
+  const { address, phone, supportEmail, siteName, responsible } = siteConfig;
   return (
     <StaticPage title="Impressum" subtitle="Angaben gemäß § 5 TMG">
       <Section title="Unternehmensangaben">
-        <P>TechCore</P>
-        <P>Wielandstraße 51</P>
-        <P>67117 Limburgerhof</P>
-        <P>Deutschland</P>
+        <P>{siteName}</P>
+        <P>{address.street}</P>
+        <P>{address.city}</P>
+        <P>{address.country}</P>
       </Section>
 
       <Section title="Kontakt">
-        <P>Telefon: +49 176 57719796</P>
+        <P>Telefon: {phone}</P>
         <P>
           E-Mail:{" "}
-          <a href="mailto:info@envetra.de" className="text-indigo-400 hover:underline">
-            info@envetra.de
+          <a href={`mailto:${supportEmail}`} className="text-[#1a56db] hover:underline">
+            {supportEmail}
           </a>
         </P>
       </Section>
 
       <Section title="Handelsregister">
         <P>Registergericht: Amtsgericht Speyer</P>
-        <P>Registernummer: HRB - </P>
+        <P>Registernummer: HRB – (wird nach Eintragung ergänzt)</P>
       </Section>
 
       <Section title="Umsatzsteuer-ID">
         <P>
-          Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:
-          DE - 
+          Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz: wird nach
+          Erteilung ergänzt.
         </P>
       </Section>
 
       <Section title="Verantwortlicher für den Inhalt (§ 55 Abs. 2 RStV)">
-        <P>Eleasar Hadrossek, Wielandstraße 51, 67117 Limburgerhof</P>
+        <P>{responsible}</P>
       </Section>
 
       <Section title="EU-Streitschlichtung">
@@ -49,7 +51,7 @@ export default function ImpressumPage() {
             href="https://ec.europa.eu/consumers/odr/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-indigo-400 hover:underline"
+            className="text-[#1a56db] hover:underline"
           >
             https://ec.europa.eu/consumers/odr/
           </a>

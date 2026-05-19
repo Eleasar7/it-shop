@@ -58,7 +58,7 @@ export default function CheckoutPage() {
         </div>
         <div>
           <h1 className="text-xl font-bold text-gray-800 mb-2">Warenkorb ist leer</h1>
-          <p className="text-gray-9000">Lege zuerst Produkte in deinen Warenkorb.</p>
+          <p className="text-gray-600">Lege zuerst Produkte in deinen Warenkorb.</p>
         </div>
         <Link href="/products" className="btn-primary inline-flex">Zum Shop</Link>
       </div>
@@ -117,7 +117,7 @@ export default function CheckoutPage() {
                 { label: "Versand", value: shipping === 0 ? "Kostenlos 🎉" : fmt(shipping), green: shipping === 0 },
                 { label: "MwSt. (19%)", value: fmt((subtotal / 1.19) * 0.19) },
               ].map(({ label, value, green }) => (
-                <div key={label} className="flex justify-between text-gray-9000">
+                <div key={label} className="flex justify-between text-gray-600">
                   <span>{label}</span>
                   <span className={green ? "text-green-400 font-semibold" : "text-gray-700"}>{value}</span>
                 </div>

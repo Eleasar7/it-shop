@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, ShoppingCart } from "lucide-react";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Zahlung abgebrochen | TechCore" };
+export const metadata: Metadata = { title: "Zahlung abgebrochen | Envetra" };
 
 export default function CheckoutCancelPage() {
   return (

@@ -1,22 +1,25 @@
 // app/(shop)/about/page.tsx
 
 import { StaticPage, Section, P } from "@/components/shop/StaticPage";
+import { siteConfig } from "@/lib/site-config";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Über uns | Envetra" };
+export const metadata: Metadata = { title: `Über uns | ${siteConfig.siteName}` };
 
 export default function AboutPage() {
+  const { siteName, address, supportEmail, phone, businessHours } = siteConfig;
+
   return (
     <StaticPage
-      title="Über TechCore"
-      subtitle="Dein Partner für professionelle IT-Hardware seit 2020"
+      title={`Über ${siteName}`}
+      subtitle="Dein Partner für professionelle IT-Hardware"
     >
       <Section title="Wer wir sind">
         <P>
-          Envetra ist ein unabhängiger IT-Hardware-Händler mit Sitz in Limburgerhof.
-          Wir beliefern Privatpersonen, Freelancer und Unternehmen mit geprüfter
-          Hardware — von iPhones über MacBooks bis hin zu Business-Notebooks und
-          Netzwerkzubehör.
+          {siteName} ist ein unabhängiger IT-Hardware-Händler mit Sitz in{" "}
+          {address.city}. Wir beliefern Privatpersonen, Freelancer und Unternehmen
+          mit geprüfter Hardware — von iPhones über MacBooks bis hin zu
+          Business-Notebooks und Netzwerkzubehör.
         </P>
         <P>
           Unser Team besteht aus erfahrenen IT-Spezialisten, die selbst täglich mit
@@ -27,17 +30,17 @@ export default function AboutPage() {
 
       <Section title="Unsere Werte">
         <P>
-          <strong className="text-slate-300">Transparenz:</strong> Faire Preise, keine
-          versteckten Kosten. Was du siehst, ist was du zahlst — inklusive
-          MwSt.
+          <strong className="text-slate-800 font-semibold">Transparenz:</strong> Faire
+          Preise, keine versteckten Kosten. Was du siehst, ist was du zahlst —
+          inklusive MwSt.
         </P>
         <P>
-          <strong className="text-slate-300">Qualität:</strong> Alle Produkte sind
-          originalverpackt, versiegelt und mit Hersteller-Garantie.
+          <strong className="text-slate-800 font-semibold">Qualität:</strong> Alle
+          Produkte sind originalverpackt, versiegelt und mit Hersteller-Garantie.
         </P>
         <P>
-          <strong className="text-slate-300">Service:</strong> Unser Support-Team ist
-          Mo–Fr von 8 bis 18 Uhr erreichbar — per Telefon, E-Mail und Chat.
+          <strong className="text-slate-800 font-semibold">Service:</strong> Unser
+          Support-Team ist {businessHours} erreichbar — per Telefon und E-Mail.
         </P>
       </Section>
 
@@ -45,16 +48,26 @@ export default function AboutPage() {
         <P>
           Für Unternehmen bieten wir attraktive Mengenpreise, Rahmenverträge und
           einen dedizierten Account-Manager.{" "}
-          <a href="/b2b" className="text-indigo-400 hover:text-indigo-300 underline">
+          <a href="/b2b" className="text-[#1a56db] hover:underline">
             Jetzt B2B-Anfrage stellen →
           </a>
         </P>
       </Section>
 
       <Section title="Kontakt">
-        <P>Envetra · Wielandstraße 51 · 67117 Limburgerhof</P>
         <P>
-          📞 +49 176 57719796 · ✉️ info@envetra.de
+          {siteName} · {address.street} · {address.city}
+        </P>
+        <P>
+          Telefon:{" "}
+          <a href={`tel:${phone.replace(/\s/g, "")}`} className="text-[#1a56db] hover:underline">
+            {phone}
+          </a>
+          {" "}·{" "}
+          E-Mail:{" "}
+          <a href={`mailto:${supportEmail}`} className="text-[#1a56db] hover:underline">
+            {supportEmail}
+          </a>
         </P>
       </Section>
     </StaticPage>

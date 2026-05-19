@@ -3,7 +3,8 @@
 import { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://techcore-shop.de";
+import { siteConfig } from "@/lib/site-config";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? siteConfig.siteUrl;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();

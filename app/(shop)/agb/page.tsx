@@ -1,25 +1,28 @@
 // app/(shop)/agb/page.tsx
 
 import { StaticPage, Section, P } from "@/components/shop/StaticPage";
+import { siteConfig } from "@/lib/site-config";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "AGB | TechCore" };
+export const metadata: Metadata = { title: `AGB | ${siteConfig.siteName}` };
 
 export default function AgbPage() {
+  const { siteName, address } = siteConfig;
+  const shopId = `${siteName}, ${address.street}, ${address.city}`;
+
   return (
     <StaticPage title="Allgemeine Geschäftsbedingungen" subtitle="Stand: Januar 2025">
       <Section title="§ 1 Geltungsbereich">
         <P>
           Diese Allgemeinen Geschäftsbedingungen gelten für alle Bestellungen über
-          den Online-Shop der TechCore GmbH, Königstraße 1, 70173 Stuttgart
-          (nachfolgend „TechCore").
+          den Online-Shop von {shopId} (nachfolgend „{siteName}").
         </P>
       </Section>
 
       <Section title="§ 2 Vertragsschluss">
         <P>
           Die Präsentation der Produkte im Online-Shop stellt kein rechtlich bindendes
-          Angebot dar. Der Kaufvertrag kommt erst zustande, wenn TechCore die Bestellung
+          Angebot dar. Der Kaufvertrag kommt erst zustande, wenn {siteName} die Bestellung
           durch eine Auftragsbestätigung per E-Mail annimmt.
         </P>
       </Section>
@@ -44,8 +47,7 @@ export default function AgbPage() {
 
       <Section title="§ 5 Eigentumsvorbehalt">
         <P>
-          Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von
-          TechCore.
+          Die gelieferte Ware bleibt bis zur vollständigen Bezahlung Eigentum von {siteName}.
         </P>
       </Section>
 
@@ -58,8 +60,8 @@ export default function AgbPage() {
 
       <Section title="§ 7 Haftung">
         <P>
-          TechCore haftet unbeschränkt für Vorsatz und grobe Fahrlässigkeit. Bei
-          einfacher Fahrlässigkeit haftet TechCore nur für die Verletzung wesentlicher
+          {siteName} haftet unbeschränkt für Vorsatz und grobe Fahrlässigkeit. Bei
+          einfacher Fahrlässigkeit haftet {siteName} nur für die Verletzung wesentlicher
           Vertragspflichten und begrenzt auf den vertragstypischen, vorhersehbaren Schaden.
         </P>
       </Section>
@@ -67,13 +69,13 @@ export default function AgbPage() {
       <Section title="§ 8 Anwendbares Recht">
         <P>
           Es gilt deutsches Recht unter Ausschluss des UN-Kaufrechts. Gerichtsstand
-          ist Stuttgart, soweit gesetzlich zulässig.
+          ist Speyer, soweit gesetzlich zulässig.
         </P>
       </Section>
 
       <Section title="§ 9 Streitbeilegung">
         <P>
-          TechCore ist nicht verpflichtet, an Streitbeilegungsverfahren vor einer
+          {siteName} ist nicht verpflichtet, an Streitbeilegungsverfahren vor einer
           Verbraucherschlichtungsstelle teilzunehmen.
         </P>
       </Section>

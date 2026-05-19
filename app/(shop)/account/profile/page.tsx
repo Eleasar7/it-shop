@@ -6,7 +6,7 @@ import { User, Mail, Phone, Building2, ChevronLeft } from "lucide-react";
 import { ProfileForm } from "./ProfileForm";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Profil | TechCore" };
+export const metadata: Metadata = { title: "Profil | Envetra" };
 
 export default async function ProfilePage() {
   const user = await requireAuth();

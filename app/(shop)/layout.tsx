@@ -5,13 +5,14 @@ import { Header } from "@/components/shop/Header";
 import { CartDrawer } from "@/components/shop/CartDrawer";
 import { Footer } from "@/components/shop/Footer";
 import { CompareBar } from "@/components/shop/CompareBar";
+import type { UserProfile } from "@/types";
 
 export default async function ShopLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
 
   return (
     <div style={{ background: "#f8f9fa", minHeight: "100vh" }}>
-      <Header />
+      <Header initialUser={user} />
       <main>{children}</main>
       <Footer />
       <CartDrawer />

@@ -1,17 +1,22 @@
 // app/(shop)/datenschutz/page.tsx
 
 import { StaticPage, Section, P } from "@/components/shop/StaticPage";
+import { siteConfig } from "@/lib/site-config";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Datenschutz | TechCore" };
+export const metadata: Metadata = { title: `Datenschutz | ${siteConfig.siteName}` };
 
 export default function DatenschutzPage() {
+  const { siteName, address, supportEmail, phone } = siteConfig;
+  const verantwortlicher = `${siteName}, ${address.street}, ${address.city}`;
+
   return (
     <StaticPage title="Datenschutzerklärung" subtitle="Informationen gemäß DSGVO / Art. 13 & 14">
       <Section title="1. Verantwortlicher">
         <P>
-          TechCore GmbH, Königstraße 1, 70173 Stuttgart · info@techcore-shop.de ·
-          +49 711 123 4567
+          {verantwortlicher} ·{" "}
+          <a href={`mailto:${supportEmail}`} className="text-[#1a56db] hover:underline">{supportEmail}</a>{" "}
+          · {phone}
         </P>
       </Section>
 
@@ -60,8 +65,8 @@ export default function DatenschutzPage() {
         </P>
         <P>
           Anfragen an:{" "}
-          <a href="mailto:datenschutz@techcore-shop.de" className="text-indigo-400 hover:underline">
-            datenschutz@techcore-shop.de
+          <a href={`mailto:${supportEmail}`} className="text-[#1a56db] hover:underline">
+            {supportEmail}
           </a>
         </P>
       </Section>
@@ -78,7 +83,11 @@ export default function DatenschutzPage() {
         <P>
           Du hast das Recht, dich bei der zuständigen Aufsichtsbehörde zu
           beschweren. Zuständig ist der Landesbeauftragte für den Datenschutz
-          Baden-Württemberg: www.baden-wuerttemberg.datenschutz.de
+          Rheinland-Pfalz:{" "}
+          <a href="https://www.datenschutz.rlp.de" target="_blank" rel="noopener noreferrer"
+            className="text-[#1a56db] hover:underline">
+            www.datenschutz.rlp.de
+          </a>
         </P>
       </Section>
     </StaticPage>

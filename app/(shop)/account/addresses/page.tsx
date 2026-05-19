@@ -5,7 +5,7 @@ import Link from "next/link";
 import { MapPin, Plus, ChevronLeft, Info } from "lucide-react";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Adressen | TechCore" };
+export const metadata: Metadata = { title: "Adressen | Envetra" };
 
 export default async function AddressesPage() {
   await requireAuth();

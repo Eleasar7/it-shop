@@ -1,7 +1,9 @@
-// components/shop/Footer.tsx — IT-shop style
+// components/shop/Footer.tsx
 
 import Link from "next/link";
+import Image from "next/image";
 import { Phone, Mail, MapPin, Truck, Shield, RotateCcw, CreditCard } from "lucide-react";
+import { siteConfig } from "@/lib/site-config";
 
 const BRANDS = ["Apple", "Lenovo", "HP", "Dell", "ASUS", "Samsung", "NVIDIA", "Intel", "AMD", "Microsoft", "Logitech", "Synology"];
 
@@ -16,30 +18,46 @@ const LINKS: Record<string, Array<{ label: string; href: string }>> = {
     { label: "Produktvergleich", href: "/compare" },
   ],
   "Service": [
-    { label: "Kaufberatung",     href: "/beratung" },
-    { label: "B2B-Anfragen",     href: "/b2b" },
-    { label: "Mein Konto",       href: "/account" },
-    { label: "Meine Bestellungen",href: "/account/orders" },
-    { label: "Versandinfos",     href: "/versand" },
-    { label: "Rückgabe",         href: "/rueckgabe" },
+    { label: "Kaufberatung",      href: "/beratung" },
+    { label: "B2B-Anfragen",      href: "/b2b" },
+    { label: "Mein Konto",        href: "/account" },
+    { label: "Meine Bestellungen", href: "/account/orders" },
+    { label: "Versandinfos",      href: "/versand" },
+    { label: "Rückgabe",          href: "/rueckgabe" },
   ],
   "Unternehmen": [
-    { label: "Über uns",         href: "/about" },
-    { label: "Impressum",        href: "/impressum" },
-    { label: "Datenschutz",      href: "/datenschutz" },
-    { label: "AGB",              href: "/agb" },
-    { label: "Widerruf",         href: "/widerruf" },
+    { label: "Über uns",   href: "/about" },
+    { label: "Impressum",  href: "/impressum" },
+    { label: "Datenschutz", href: "/datenschutz" },
+    { label: "AGB",        href: "/agb" },
+    { label: "Widerruf",   href: "/widerruf" },
   ],
 };
 
 const TRUST = [
-  { icon: Truck,     label: "Schneller Versand",    sub: "1–2 Werktage" },
-  { icon: Shield,    label: "2 Jahre Garantie",      sub: "Geprüfte Ware" },
-  { icon: RotateCcw, label: "30 Tage Rückgabe",      sub: "Kostenlos" },
-  { icon: CreditCard,label: "Kauf auf Rechnung",     sub: "Für B2B-Kunden" },
+  { icon: Truck,      label: "Schneller Versand",  sub: "1–2 Werktage" },
+  { icon: Shield,     label: "2 Jahre Garantie",   sub: "Geprüfte Ware" },
+  { icon: RotateCcw,  label: "30 Tage Rückgabe",   sub: "Kostenlos" },
+  { icon: CreditCard, label: "Kauf auf Rechnung",  sub: "Für B2B-Kunden" },
 ];
 
+/** Inline logo — same logic as Header: SVG → PNG → text badge (SSR safe) */
+function FooterLogo() {
+  return (
+    <Link href="/" className="flex items-center gap-2.5 group">
+      <img
+        src="/logo.png"
+        alt={siteConfig.siteName}
+        className="h-10 w-auto object-contain"
+      />
+    </Link>
+  );
+}
+
 export function Footer() {
+  const { phone, supportEmail, address, businessHours } = siteConfig;
+  const phoneHref = `tel:${phone.replace(/\s/g, "")}`;
+
   return (
     <footer className="mt-16 border-t border-[#e8eaed] bg-[#f8f9fa]">
 
@@ -67,33 +85,27 @@ export function Footer() {
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 bg-[#1a56db] rounded-lg flex items-center justify-center text-white font-black text-sm">
-                IT
-              </div>
-              <div>
-                <div className="font-extrabold text-lg text-gray-900">ENTREVA</div>
-                <div className="text-[10px] text-[#1a56db] font-bold uppercase tracking-widest">Hardware Shop</div>
-              </div>
-            </Link>
-            <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
-              Ihr Partner für IT-Hardware – Laptops, Server, Netzwerk und mehr. Über 10.000 Produkte für B2B und Privatkunden.
+            <FooterLogo />
+            <p className="text-sm text-gray-600 leading-relaxed max-w-xs">
+              Ihr Partner für IT-Hardware – Laptops, Server, Netzwerk und mehr.
+              Geprüfte Qualität für B2B und Privatkunden.
             </p>
             <div className="space-y-2">
               {[
-                { icon: Phone, text: "+49 176 57719796", href: "tel:+4917657719796" },
-                { icon: Mail,  text: "entreva@sales.de",  href: "mailto:sales@entreva.de" },
-                { icon: MapPin,text: "Burgunder Platz 2, 67117 Limburgerhof", href: null },
+                { icon: Phone,  text: phone,          href: phoneHref },
+                { icon: Mail,   text: supportEmail,   href: `mailto:${supportEmail}` },
+                { icon: MapPin, text: `${address.street}, ${address.city}`, href: null },
               ].map(({ icon: Icon, text, href }) => (
                 <div key={text} className="flex items-center gap-2">
                   <Icon size={13} className="text-gray-400 flex-shrink-0" />
                   {href ? (
-                    <a href={href} className="text-sm text-gray-600 hover:text-[#1a56db] transition-colors">{text}</a>
+                    <a href={href} className="text-sm text-gray-700 hover:text-[#1a56db] transition-colors">{text}</a>
                   ) : (
-                    <span className="text-sm text-gray-500">{text}</span>
+                    <span className="text-sm text-gray-600">{text}</span>
                   )}
                 </div>
               ))}
+              <p className="text-xs text-gray-500 pl-5">{businessHours}</p>
             </div>
           </div>
 
@@ -104,7 +116,7 @@ export function Footer() {
               <ul className="space-y-2">
                 {links.map(({ label, href }) => (
                   <li key={label}>
-                    <Link href={href} className="text-sm text-gray-500 hover:text-[#1a56db] transition-colors">
+                    <Link href={href} className="text-sm text-gray-600 hover:text-[#1a56db] transition-colors">
                       {label}
                     </Link>
                   </li>
@@ -116,7 +128,7 @@ export function Footer() {
 
         {/* Brands */}
         <div className="mt-10 pt-8 border-t border-[#e8eaed]">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Unsere Marken</p>
+          <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Unsere Marken</p>
           <div className="flex flex-wrap gap-2">
             {BRANDS.map((brand) => (
               <Link key={brand} href={`/products?brand=${brand}`}
@@ -131,12 +143,12 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-[#e8eaed] bg-white">
         <div className="section py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-gray-400">
-            © {new Date().getFullYear()} ENVETRA · Alle Rechte vorbehalten
+          <p className="text-xs text-gray-500">
+            © {new Date().getFullYear()} {siteConfig.brandShort} · Alle Rechte vorbehalten
           </p>
           <div className="flex items-center gap-2 flex-wrap justify-center">
             {["Visa", "Mastercard", "SEPA", "Klarna", "PayPal"].map((m) => (
-              <span key={m} className="text-[10px] px-2 py-1 bg-[#f1f3f4] border border-[#e8eaed] rounded text-gray-500 font-semibold">
+              <span key={m} className="text-[10px] px-2 py-1 bg-[#f1f3f4] border border-[#e8eaed] rounded text-gray-600 font-semibold">
                 {m}
               </span>
             ))}

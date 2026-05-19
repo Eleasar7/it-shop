@@ -84,13 +84,13 @@ export default function CartPage() {
                     style={{ border: "1px solid #e8eaed", background: "#f8f9fa" }}>
                     <button onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                       disabled={item.quantity <= 1}
-                      className="w-8 h-8 flex items-center justify-center text-gray-9000 hover:text-white transition-colors disabled:opacity-30">
+                      className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-white transition-colors disabled:opacity-30">
                       <Minus size={13} />
                     </button>
                     <span className="w-9 text-center text-sm font-black text-gray-900">{item.quantity}</span>
                     <button onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                       disabled={item.quantity >= item.product.stock}
-                      className="w-8 h-8 flex items-center justify-center text-gray-9000 hover:text-white transition-colors disabled:opacity-30">
+                      className="w-8 h-8 flex items-center justify-center text-gray-600 hover:text-white transition-colors disabled:opacity-30">
                       <Plus size={13} />
                     </button>
                   </div>
@@ -119,7 +119,7 @@ export default function CartPage() {
             {/* Free shipping progress */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs font-semibold">
-                <div className="flex items-center gap-1.5 text-gray-9000">
+                <div className="flex items-center gap-1.5 text-gray-600">
                   <Truck size={12} />
                   {freeShippingRemaining > 0
                     ? <span>Noch <span className="text-gray-700">{fmt(freeShippingRemaining)}</span> bis Gratis-Versand</span>
@@ -138,17 +138,17 @@ export default function CartPage() {
 
             {/* Line items */}
             <div className="space-y-3 text-sm" style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "1.25rem" }}>
-              <div className="flex justify-between text-gray-9000">
+              <div className="flex justify-between text-gray-600">
                 <span>Zwischensumme ({items.reduce((s, i) => s + i.quantity, 0)} Artikel)</span>
                 <span className="text-gray-700 font-semibold tabular-nums">{fmt(subtotal)}</span>
               </div>
-              <div className="flex justify-between text-gray-9000">
+              <div className="flex justify-between text-gray-600">
                 <span>Versand</span>
                 <span className={`font-semibold ${shipping === 0 ? "text-green-400" : "text-gray-700"}`}>
                   {shipping === 0 ? "Gratis 🎉" : fmt(shipping)}
                 </span>
               </div>
-              <div className="flex justify-between text-gray-9000 text-xs">
+              <div className="flex justify-between text-gray-600 text-xs">
                 <span>MwSt. (19%)</span>
                 <span className="text-gray-400 tabular-nums">{fmt((subtotal / 1.19) * 0.19)}</span>
               </div>

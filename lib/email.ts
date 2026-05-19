@@ -4,6 +4,8 @@
 // Set RESEND_API_KEY in your environment to enable real sends.
 // If the key is absent, emails are logged to the console (dev mode).
 
+import { siteConfig } from "@/lib/site-config";
+
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 interface EmailPayload {
@@ -35,8 +37,9 @@ interface B2BEmailData {
 
 // ─── Send function ───────────────────────────────────────────────────────────
 
-const FROM_EMAIL = process.env.EMAIL_FROM ?? "noreply@techcore-shop.de";
-const ADMIN_EMAIL = process.env.EMAIL_ADMIN ?? "admin@techcore-shop.de";
+const FROM_EMAIL  = process.env.EMAIL_FROM  ?? `noreply@envetra.de`;
+const ADMIN_EMAIL = process.env.EMAIL_ADMIN ?? siteConfig.supportEmail;
+const APP_URL     = process.env.NEXT_PUBLIC_APP_URL ?? siteConfig.siteUrl;
 
 async function sendEmail(payload: EmailPayload): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
@@ -88,6 +91,7 @@ const baseStyle = `
 `;
 
 function emailWrapper(content: string): string {
+  const { brandShort, address, siteUrl } = siteConfig;
   return `
 <!DOCTYPE html>
 <html lang="de">
@@ -97,7 +101,7 @@ function emailWrapper(content: string): string {
   <tr>
     <td style="background:linear-gradient(135deg,#111328,#0c0e1e);padding:32px;border-bottom:1px solid rgba(255,255,255,0.07);">
       <p style="margin:0;font-size:22px;font-weight:900;color:#f8fafc;letter-spacing:-0.5px;">
-        TechCore<span style="color:#818cf8;">.</span>
+        ${brandShort}<span style="color:#1a56db;">.</span>
       </p>
       <p style="margin:4px 0 0;font-size:11px;color:#475569;font-weight:600;text-transform:uppercase;letter-spacing:1px;">Premium IT-Hardware</p>
     </td>
@@ -110,8 +114,8 @@ function emailWrapper(content: string): string {
   <tr>
     <td style="padding:24px 32px;background:#060912;border-top:1px solid rgba(255,255,255,0.05);">
       <p style="margin:0;font-size:12px;color:#334155;text-align:center;">
-        TechCore GmbH · Königstraße 1 · 70173 Stuttgart<br>
-        <a href="https://techcore-shop.de" style="color:#4f46e5;text-decoration:none;">techcore-shop.de</a>
+        ${brandShort} · ${address.street} · ${address.city}<br>
+        <a href="${siteUrl}" style="color:#1a56db;text-decoration:none;">${siteUrl.replace("https://", "")}</a>
       </p>
     </td>
   </tr>
@@ -145,8 +149,8 @@ export async function sendOrderConfirmation(data: OrderEmailData): Promise<boole
     <h1 style="margin:0 0 8px;font-size:24px;font-weight:900;color:#f8fafc;">Bestellbestätigung 🎉</h1>
     <p style="margin:0 0 24px;color:#64748b;font-size:15px;">Hallo ${data.customerName}, vielen Dank für deine Bestellung!</p>
     
-    <div style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:10px;padding:16px 20px;margin-bottom:24px;">
-      <p style="margin:0;font-size:13px;color:#818cf8;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Bestellnummer</p>
+    <div style="background:rgba(26,86,219,0.1);border:1px solid rgba(26,86,219,0.2);border-radius:10px;padding:16px 20px;margin-bottom:24px;">
+      <p style="margin:0;font-size:13px;color:#60a5fa;font-weight:700;text-transform:uppercase;letter-spacing:1px;">Bestellnummer</p>
       <p style="margin:4px 0 0;font-size:20px;font-weight:900;color:#f8fafc;font-family:monospace;">#${data.orderNumber.slice(-8).toUpperCase()}</p>
     </div>
 
@@ -168,8 +172,8 @@ export async function sendOrderConfirmation(data: OrderEmailData): Promise<boole
     </table>
 
     <div style="text-align:center;margin-top:32px;">
-      <a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://techcore-shop.de"}/account/orders"
-        style="display:inline-block;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;text-decoration:none;padding:14px 32px;border-radius:12px;font-weight:700;font-size:15px;">
+      <a href="${APP_URL}/account/orders"
+        style="display:inline-block;background:#1a56db;color:white;text-decoration:none;padding:14px 32px;border-radius:12px;font-weight:700;font-size:15px;">
         Bestellung ansehen →
       </a>
     </div>
@@ -177,7 +181,7 @@ export async function sendOrderConfirmation(data: OrderEmailData): Promise<boole
 
   return sendEmail({
     to: data.customerEmail,
-    subject: `Bestellbestätigung #${data.orderNumber.slice(-8).toUpperCase()} – TechCore`,
+    subject: `Bestellbestätigung #${data.orderNumber.slice(-8).toUpperCase()} – ${siteConfig.brandShort}`,
     html: emailWrapper(content),
   });
 }
@@ -188,7 +192,7 @@ export async function sendOrderConfirmation(data: OrderEmailData): Promise<boole
 export async function sendAdminOrderNotification(data: OrderEmailData): Promise<boolean> {
   const content = `
     <h1 style="margin:0 0 8px;font-size:22px;font-weight:900;color:#f8fafc;">Neue Bestellung eingegangen</h1>
-    <p style="margin:0 0 24px;color:#64748b;">Bestellnummer: <strong style="color:#818cf8;font-family:monospace;">#${data.orderNumber.slice(-8).toUpperCase()}</strong></p>
+    <p style="margin:0 0 24px;color:#64748b;">Bestellnummer: <strong style="color:#60a5fa;font-family:monospace;">#${data.orderNumber.slice(-8).toUpperCase()}</strong></p>
     
     <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:16px 20px;margin-bottom:20px;">
       <p style="margin:0 0 4px;font-size:13px;color:#94a3b8;">Kunde</p>
@@ -199,8 +203,8 @@ export async function sendAdminOrderNotification(data: OrderEmailData): Promise<
     <p style="margin:0 0 8px;color:#94a3b8;font-size:13px;">${data.items.length} Artikel · Gesamt: <strong style="color:#f8fafc;">${formatEur(data.totalAmount)}</strong></p>
 
     <div style="text-align:center;margin-top:24px;">
-      <a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://techcore-shop.de"}/admin/orders"
-        style="display:inline-block;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);color:#818cf8;text-decoration:none;padding:12px 28px;border-radius:10px;font-weight:700;font-size:14px;">
+      <a href="${APP_URL}/admin/orders"
+        style="display:inline-block;background:rgba(26,86,219,0.15);border:1px solid rgba(26,86,219,0.3);color:#60a5fa;text-decoration:none;padding:12px 28px;border-radius:10px;font-weight:700;font-size:14px;">
         Im Admin ansehen →
       </a>
     </div>
@@ -235,16 +239,16 @@ export async function sendB2BConfirmation(data: B2BEmailData): Promise<boolean> 
       Ihr Anliegen: <em style="color:#94a3b8;">${data.message}</em>
     </p>
 
-    <div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.15);border-radius:10px;padding:16px 20px;">
-      <p style="margin:0;color:#818cf8;font-size:14px;">
-        📞 Bei dringenden Anfragen erreichen Sie uns unter <strong>+49 711 123 4567</strong>
+    <div style="background:rgba(26,86,219,0.08);border:1px solid rgba(26,86,219,0.15);border-radius:10px;padding:16px 20px;">
+      <p style="margin:0;color:#60a5fa;font-size:14px;">
+        📞 Bei dringenden Anfragen erreichen Sie uns unter <strong>${siteConfig.phone}</strong>
       </p>
     </div>
   `;
 
   return sendEmail({
     to: data.email,
-    subject: "Ihre B2B-Anfrage bei TechCore – Wir melden uns!",
+    subject: `Ihre B2B-Anfrage bei ${siteConfig.brandShort} – Wir melden uns!`,
     html: emailWrapper(content),
     replyTo: ADMIN_EMAIL,
   });
@@ -275,8 +279,8 @@ export async function sendB2BAdminNotification(data: B2BEmailData): Promise<bool
     </div>` : ""}
 
     <div style="text-align:center;">
-      <a href="${process.env.NEXT_PUBLIC_APP_URL ?? "https://techcore-shop.de"}/admin/b2b"
-        style="display:inline-block;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);color:#818cf8;text-decoration:none;padding:12px 28px;border-radius:10px;font-weight:700;font-size:14px;">
+      <a href="${APP_URL}/admin/b2b"
+        style="display:inline-block;background:rgba(26,86,219,0.15);border:1px solid rgba(26,86,219,0.3);color:#60a5fa;text-decoration:none;padding:12px 28px;border-radius:10px;font-weight:700;font-size:14px;">
         Anfrage bearbeiten →
       </a>
     </div>

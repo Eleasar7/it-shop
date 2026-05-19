@@ -3,28 +3,29 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { siteConfig } from "@/lib/site-config";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://techcore-shop.de";
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? siteConfig.siteUrl;
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "ENVETRA – IT-Hardware Shop",
-    template: "%s | ENVETRA",
+    default: `${siteConfig.brandShort} – IT-Hardware Shop`,
+    template: `%s | ${siteConfig.brandShort}`,
   },
   description:
     "IT-Hardware für Business & Projekte. " +
     "Schnelle Lieferung, geprüfte Qualität und persönlicher Support.",
   keywords: [
     "IT-Hardware", "iPhone kaufen", "MacBook", "Laptop", "B2B IT",
-    "Webshop", "Stuttgart", "Express-Versand",
+    "Webshop", "Limburgerhof", "Express-Versand",
   ],
-  authors: [{ name: "TechCore GmbH", url: BASE_URL }],
-  creator: "TechCore GmbH",
-  publisher: "TechCore GmbH",
+  authors: [{ name: siteConfig.siteName, url: BASE_URL }],
+  creator: siteConfig.siteName,
+  publisher: siteConfig.siteName,
   robots: {
     index: true,
     follow: true,
@@ -34,22 +35,21 @@ export const metadata: Metadata = {
     type: "website",
     locale: "de_DE",
     url: BASE_URL,
-    siteName: "ENVETRA",
-    title: "ENVETRA – IT-Hardware Shop",
-    description:
-      "IT-Hardware für Business & Projekte.",
+    siteName: siteConfig.brandShort,
+    title: `${siteConfig.brandShort} – IT-Hardware Shop`,
+    description: "IT-Hardware für Business & Projekte.",
     images: [
       {
-        url: "/og-image.png",      // Place a 1200×630 image in /public/og-image.png
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "ENVETRA – IT-Hardware Shop",
+        alt: `${siteConfig.brandShort} – IT-Hardware Shop`,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ENVETRA – IT-Hardware Shop",
+    title: `${siteConfig.brandShort} – IT-Hardware Shop`,
     description: "IT-Hardware für Business & Projekte.",
     images: ["/og-image.png"],
   },
