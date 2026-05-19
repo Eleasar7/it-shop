@@ -328,7 +328,7 @@ export function Header() {
               </span>
               <span className="flex items-center gap-1.5 px-4">
                 <Phone size={10} className="text-blue-400" />
-                B2B-Hotline: <strong className="text-white ml-1">+49 30 123 456 789</strong>
+                B2B-Hotline: <strong className="text-white ml-1">+49 176 57719796</strong>
               </span>
               <span className="flex items-center gap-1.5 px-4">
                 <Clock size={10} className="text-slate-400" />

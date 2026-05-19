@@ -3,17 +3,17 @@
 import { StaticPage, Section, P } from "@/components/shop/StaticPage";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Über uns | TechCore" };
+export const metadata: Metadata = { title: "Über uns | Envetra" };
 
 export default function AboutPage() {
   return (
     <StaticPage
       title="Über TechCore"
-      subtitle="Dein Partner für professionelle IT-Hardware seit 2015"
+      subtitle="Dein Partner für professionelle IT-Hardware seit 2020"
     >
       <Section title="Wer wir sind">
         <P>
-          TechCore ist ein unabhängiger IT-Hardware-Händler mit Sitz in Stuttgart.
+          Envetra ist ein unabhängiger IT-Hardware-Händler mit Sitz in Limburgerhof.
           Wir beliefern Privatpersonen, Freelancer und Unternehmen mit geprüfter
           Hardware — von iPhones über MacBooks bis hin zu Business-Notebooks und
           Netzwerkzubehör.
@@ -52,9 +52,9 @@ export default function AboutPage() {
       </Section>
 
       <Section title="Kontakt">
-        <P>TechCore GmbH · Königstraße 1 · 70173 Stuttgart</P>
+        <P>Envetra · Wielandstraße 51 · 67117 Limburgerhof</P>
         <P>
-          📞 +49 711 123 4567 · ✉️ info@techcore-shop.de
+          📞 +49 176 57719796 · ✉️ info@envetra.de
         </P>
       </Section>
     </StaticPage>

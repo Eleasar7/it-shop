@@ -9,36 +9,36 @@ export default function ImpressumPage() {
   return (
     <StaticPage title="Impressum" subtitle="Angaben gemäß § 5 TMG">
       <Section title="Unternehmensangaben">
-        <P>TechCore GmbH</P>
-        <P>Königstraße 1</P>
-        <P>70173 Stuttgart</P>
+        <P>TechCore</P>
+        <P>Wielandstraße 51</P>
+        <P>67117 Limburgerhof</P>
         <P>Deutschland</P>
       </Section>
 
       <Section title="Kontakt">
-        <P>Telefon: +49 711 123 4567</P>
+        <P>Telefon: +49 176 57719796</P>
         <P>
           E-Mail:{" "}
-          <a href="mailto:info@techcore-shop.de" className="text-indigo-400 hover:underline">
-            info@techcore-shop.de
+          <a href="mailto:info@envetra.de" className="text-indigo-400 hover:underline">
+            info@envetra.de
           </a>
         </P>
       </Section>
 
       <Section title="Handelsregister">
-        <P>Registergericht: Amtsgericht Stuttgart</P>
-        <P>Registernummer: HRB 123456</P>
+        <P>Registergericht: Amtsgericht Speyer</P>
+        <P>Registernummer: HRB - </P>
       </Section>
 
       <Section title="Umsatzsteuer-ID">
         <P>
           Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:
-          DE 123 456 789
+          DE - 
         </P>
       </Section>
 
       <Section title="Verantwortlicher für den Inhalt (§ 55 Abs. 2 RStV)">
-        <P>Max Mustermann, Königstraße 1, 70173 Stuttgart</P>
+        <P>Eleasar Hadrossek, Wielandstraße 51, 67117 Limburgerhof</P>
       </Section>
 
       <Section title="EU-Streitschlichtung">
