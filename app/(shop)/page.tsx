@@ -3,8 +3,17 @@
 import Link from "next/link";
 import Image from "next/image";
 import {
-  ChevronRight, Truck, Shield, RotateCcw, Phone,
-  Building2, FileText, Tag, Zap, Star,
+  ChevronRight,
+  ChevronDown,
+  Truck,
+  Shield,
+  RotateCcw,
+  Phone,
+  Building2,
+  FileText,
+  Tag,
+  Zap,
+  Star,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { serializeProducts } from "@/lib/serializers";
@@ -14,7 +23,7 @@ import { ProductCard } from "@/components/shop/ProductCard";
 
 async function getHomeData() {
   try {
-    const [categories, featured, onSale, newest] = await Promise.all([
+    const [categories, featured, onSale, newest, brandsRaw] = await Promise.all([
       prisma.category.findMany({
         orderBy: { sortOrder: "asc" },
         include: { _count: { select: { products: { where: { isActive: true } } } } },
@@ -37,43 +46,49 @@ async function getHomeData() {
         take: 4,
         include: { category: { select: { id: true, name: true, slug: true } } },
       }),
+      prisma.product.findMany({
+        where: {
+          isActive: true,
+        },
+        select: { brand: true },
+        distinct: ["brand"],
+        orderBy: { brand: "asc" },
+      }),
     ]);
 
     return {
       categories,
       featured: serializeProducts(featured),
-      onSale:   serializeProducts(onSale),
-      newest:   serializeProducts(newest),
+      onSale: serializeProducts(onSale),
+      newest: serializeProducts(newest),
+      brands: brandsRaw
+        .map((item) => item.brand)
+        .filter((brand): brand is string => Boolean(brand)),
     };
   } catch {
-    return { categories: [], featured: [], onSale: [], newest: [] };
+    return { categories: [], featured: [], onSale: [], newest: [], brands: [] };
   }
 }
 
 // ─── Static data ──────────────────────────────────────────────────────────────
 
 const FALLBACK_CATS = [
-  { id: "1", slug: "laptops",     name: "Laptops",      imageUrl: null, _count: { products: 0 } },
-  { id: "2", slug: "smartphones", name: "Smartphones",  imageUrl: null, _count: { products: 0 } },
-  { id: "3", slug: "tablets",     name: "Tablets",      imageUrl: null, _count: { products: 0 } },
-  { id: "4", slug: "netzwerk",    name: "Netzwerk",     imageUrl: null, _count: { products: 0 } },
-  { id: "5", slug: "server",      name: "Server",       imageUrl: null, _count: { products: 0 } },
-  { id: "6", slug: "monitore",    name: "Monitore",     imageUrl: null, _count: { products: 0 } },
-  { id: "7", slug: "speicher",    name: "Speicher",     imageUrl: null, _count: { products: 0 } },
-  { id: "8", slug: "zubehoer",    name: "Zubehör",      imageUrl: null, _count: { products: 0 } },
-  { id: "9", slug: "it-services", name: "IT-Services",  imageUrl: null, _count: { products: 0 } },
-];
-
-const BRANDS = [
-  "Apple", "Lenovo", "HP", "Dell", "ASUS", "MSI", "Samsung", "NVIDIA", "Intel",
-  "AMD", "Microsoft", "Logitech", "Synology", "Ubiquiti", "Acer",
+  { id: "1", slug: "laptops", name: "Laptops", imageUrl: null, _count: { products: 0 } },
+  { id: "2", slug: "smartphones", name: "Smartphones", imageUrl: null, _count: { products: 0 } },
+  { id: "3", slug: "tablets", name: "Tablets", imageUrl: null, _count: { products: 0 } },
+  { id: "4", slug: "netzwerk", name: "Netzwerk", imageUrl: null, _count: { products: 0 } },
+  { id: "5", slug: "server", name: "Server", imageUrl: null, _count: { products: 0 } },
+  { id: "6", slug: "monitore", name: "Monitore", imageUrl: null, _count: { products: 0 } },
+  { id: "7", slug: "speicher", name: "Speicher", imageUrl: null, _count: { products: 0 } },
+  { id: "8", slug: "zubehoer", name: "Zubehör", imageUrl: null, _count: { products: 0 } },
+  { id: "9", slug: "it-services", name: "IT-Services", imageUrl: null, _count: { products: 0 } },
 ];
 
 const TRUST_ITEMS = [
-  { icon: Truck,     label: "Versandkostenfrei", sub: "Ab 99 € Bestellwert" },
-  { icon: Shield,    label: "2 Jahre Garantie",  sub: "Auf alle Produkte" },
-  { icon: RotateCcw, label: "30 Tage Rückgabe",  sub: "Kostenlos & unkompliziert" },
-  { icon: Phone,     label: "B2B-Hotline",        sub: "Mo–Fr 8–18 Uhr" },
+  { icon: Truck, label: "Versandkostenfrei", sub: "Ab 99 € Bestellwert" },
+  { icon: Shield, label: "2 Jahre Garantie", sub: "Auf alle Produkte" },
+  { icon: RotateCcw, label: "30 Tage Rückgabe", sub: "Kostenlos & unkompliziert" },
+  { icon: Phone, label: "B2B-Hotline", sub: "Mo–Fr 8–18 Uhr" },
 ];
 
 // ─── Category Card ─────────────────────────────────────────────────────────────
@@ -88,7 +103,6 @@ function CategoryCard({
       href={`/products?category=${cat.slug}`}
       className="group flex flex-col bg-white border border-[#e2e8f0] rounded-lg overflow-hidden hover:shadow-md hover:border-[#c7d9fb] transition-all duration-200"
     >
-      {/* Image area — 155px, object-contain, white bg */}
       <div className="relative bg-white border-b border-[#f1f5f9]" style={{ height: 155 }}>
         {cat.imageUrl ? (
           <Image
@@ -99,7 +113,6 @@ function CategoryCard({
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
           />
         ) : (
-          /* No-image placeholder — neutral, no emoji, no icon */
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 select-none">
             <div className="w-12 h-12 rounded border border-dashed border-[#d1d5db] bg-[#f9fafb]" />
             <span className="text-[10px] text-[#9ca3af] font-medium tracking-wide">Kein Bild</span>
@@ -107,7 +120,6 @@ function CategoryCard({
         )}
       </div>
 
-      {/* Label */}
       <div className="px-3 py-2.5">
         <p className="text-[12px] font-bold text-gray-800 group-hover:text-[#1a56db] transition-colors leading-tight truncate">
           {cat.name}
@@ -123,18 +135,15 @@ function CategoryCard({
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const { categories, featured, onSale, newest } = await getHomeData();
+  const { categories, featured, onSale, newest, brands } = await getHomeData();
   const displayCats = categories.length > 0 ? categories : FALLBACK_CATS;
 
   return (
     <div className="bg-[#f8f9fa]">
-
       {/* ── HERO / CATEGORY STRIP ── */}
       <section className="bg-white border-b border-[#e8eaed]">
         <div className="section py-5">
           <div className="flex flex-col md:flex-row gap-6 items-start">
-
-            {/* Left: compact copy */}
             <div className="flex-shrink-0 md:w-72">
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-2 h-2 bg-green-500 rounded-full"></span>
@@ -158,9 +167,9 @@ export default async function HomePage() {
               <div className="grid grid-cols-2 gap-3 mt-5 pt-5 border-t border-[#e8eaed]">
                 {[
                   { v: "10.000+", l: "Produkte" },
-                  { v: "2.400+",  l: "B2B-Kunden" },
-                  { v: "24h",     l: "Angebot" },
-                  { v: "15 J.",   l: "Erfahrung" },
+                  { v: "2.400+", l: "B2B-Kunden" },
+                  { v: "24h", l: "Angebot" },
+                  { v: "15 J.", l: "Erfahrung" },
                 ].map(({ v, l }) => (
                   <div key={l}>
                     <p className="text-base font-extrabold text-gray-900">{v}</p>
@@ -170,7 +179,6 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Right: category grid — REAL images */}
             <div className="flex-1">
               <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Kategorien</p>
               <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2.5">
@@ -200,6 +208,53 @@ export default async function HomePage() {
         </div>
       </div>
 
+      {/* ── KAUFBERATUNG ── */}
+      <div className="section py-5">
+        <Link
+          href="/beratung"
+          className="group relative block overflow-hidden rounded-2xl bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 p-6 sm:p-8 text-white shadow-2xl"
+        >
+          <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-blue-500/20 blur-3xl" />
+
+          <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="max-w-2xl">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-blue-400/20 bg-blue-500/10 px-4 py-2 text-xs font-bold text-blue-200">
+                ✨ Smart Kaufberatung
+              </div>
+
+              <h2 className="text-2xl sm:text-4xl font-black leading-tight">
+                Finde die perfekte Hardware
+                <span className="block text-blue-300">in unter 60 Sekunden</span>
+              </h2>
+
+              <p className="mt-4 text-sm sm:text-base text-slate-300 leading-relaxed">
+                Egal ob Gaming, Business, Schule oder IT-Projekt — unsere interaktive Kaufberatung empfiehlt dir
+                passende Geräte und IT-Hardware.
+              </p>
+
+              <div className="mt-5 flex flex-wrap gap-2">
+                {["Gaming PCs", "Business Laptops", "Netzwerk", "Server", "Smartphones"].map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-slate-200 border border-white/10"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-col items-start lg:items-end gap-3">
+              <div className="rounded-2xl bg-white px-6 py-4 text-slate-950 font-black text-sm sm:text-base transition-all duration-300 group-hover:scale-105">
+                Jetzt Kaufberatung starten →
+              </div>
+
+              <p className="text-xs text-slate-400">Kostenlos • Schnell • Mobil optimiert</p>
+            </div>
+          </div>
+        </Link>
+      </div>
+
       {/* ── DEAL BANNERS ── */}
       <div className="section py-5">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -211,8 +266,10 @@ export default async function HomePage() {
               </div>
               <p className="text-lg font-extrabold leading-snug">Business-Laptops ab 799 €</p>
               <p className="text-xs opacity-70 mt-0.5 mb-3">ThinkPad, EliteBook, MacBook</p>
-              <Link href="/products?category=laptops"
-                className="inline-flex items-center gap-1 bg-white text-[#1a56db] text-xs font-bold px-3 py-1.5 rounded hover:bg-blue-50 transition-colors">
+              <Link
+                href="/products?category=laptops"
+                className="inline-flex items-center gap-1 bg-white text-[#1a56db] text-xs font-bold px-3 py-1.5 rounded hover:bg-blue-50 transition-colors"
+              >
                 Entdecken <ChevronRight size={12} />
               </Link>
             </div>
@@ -223,10 +280,14 @@ export default async function HomePage() {
                 <Zap size={11} className="text-amber-400" />
                 <span className="text-[10px] font-bold uppercase tracking-wider opacity-70">B2B Angebot</span>
               </div>
-              <p className="text-base font-extrabold leading-snug">Refurbished<br />bis 40% günstiger</p>
+              <p className="text-base font-extrabold leading-snug">
+                Refurbished<br />bis 40% günstiger
+              </p>
               <p className="text-xs opacity-60 mt-0.5 mb-3">Zertifiziert & geprüft</p>
-              <Link href="/products"
-                className="inline-flex items-center gap-1 bg-white/15 text-white text-xs font-bold px-3 py-1.5 rounded border border-white/20 hover:bg-white/25 transition-colors">
+              <Link
+                href="/products"
+                className="inline-flex items-center gap-1 bg-white/15 text-white text-xs font-bold px-3 py-1.5 rounded border border-white/20 hover:bg-white/25 transition-colors"
+              >
                 Zum Sortiment <ChevronRight size={12} />
               </Link>
             </div>
@@ -247,25 +308,61 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {featured.slice(0, 8).map((p) => <ProductCard key={p.id} product={p} />)}
+            {featured.slice(0, 8).map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
           </div>
         </div>
       )}
 
       {/* ── BRANDS ── */}
-      <div className="section py-4">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-extrabold text-gray-900">Marken</h2>
+      {brands.length > 0 && (
+        <div className="section py-4">
+          <div className="flex items-center justify-between mb-3 gap-3">
+            <h2 className="text-base font-extrabold text-gray-900">Marken</h2>
+
+            <details className="relative">
+              <summary className="list-none cursor-pointer inline-flex items-center gap-2 rounded-lg border border-[#dadce0] bg-white px-4 py-2 text-xs font-bold text-gray-700 hover:border-[#1a56db] hover:text-[#1a56db] transition">
+                Marke auswählen
+                <ChevronDown size={14} />
+              </summary>
+
+              <div className="absolute right-0 z-30 mt-2 w-60 overflow-hidden rounded-xl border border-[#e8eaed] bg-white shadow-xl">
+                <div className="max-h-72 overflow-y-auto py-2">
+                  <Link
+                    href="/products"
+                    className="block px-4 py-2 text-sm font-semibold text-gray-500 hover:bg-[#f8f9fa] hover:text-[#1a56db]"
+                  >
+                    Alle Marken anzeigen
+                  </Link>
+
+                  {brands.map((brand) => (
+                    <Link
+                      key={brand}
+                      href={`/products?brand=${encodeURIComponent(brand)}`}
+                      className="block px-4 py-2 text-sm font-bold text-gray-700 hover:bg-[#f8f9fa] hover:text-[#1a56db] transition"
+                    >
+                      {brand}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+            {brands.slice(0, 15).map((brand) => (
+              <Link
+                key={brand}
+                href={`/products?brand=${encodeURIComponent(brand)}`}
+                className="flex-shrink-0 bg-white border border-[#dadce0] rounded px-4 py-2.5 text-xs font-bold text-gray-600 hover:border-[#1a56db] hover:text-[#1a56db] transition-colors whitespace-nowrap"
+              >
+                {brand}
+              </Link>
+            ))}
+          </div>
         </div>
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-          {BRANDS.map((brand) => (
-            <Link key={brand} href={`/products?brand=${brand}`}
-              className="flex-shrink-0 bg-white border border-[#dadce0] rounded px-4 py-2.5 text-xs font-bold text-gray-600 hover:border-[#1a56db] hover:text-[#1a56db] transition-colors whitespace-nowrap">
-              {brand}
-            </Link>
-          ))}
-        </div>
-      </div>
+      )}
 
       {/* ── ANGEBOTE ── */}
       {onSale.length > 0 && (
@@ -280,7 +377,9 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {onSale.slice(0, 8).map((p) => <ProductCard key={p.id} product={p} />)}
+            {onSale.slice(0, 8).map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
           </div>
         </div>
       )}
@@ -305,7 +404,9 @@ export default async function HomePage() {
                   "Persönlicher Ansprechpartner",
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
-                    <span className="w-3.5 h-3.5 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0">✓</span>
+                    <span className="w-3.5 h-3.5 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-[9px] font-bold flex-shrink-0">
+                      ✓
+                    </span>
                     {item}
                   </li>
                 ))}
@@ -322,8 +423,8 @@ export default async function HomePage() {
             <div className="grid grid-cols-2 gap-2 flex-shrink-0">
               {[
                 { v: "2.400+", l: "B2B-Partner" },
-                { v: "24h",    l: "Angebot" },
-                { v: "99,8%",  l: "Zufriedenheit" },
+                { v: "24h", l: "Angebot" },
+                { v: "99,8%", l: "Zufriedenheit" },
                 { v: "15 J.", l: "Erfahrung" },
               ].map(({ v, l }) => (
                 <div key={l} className="bg-[#f8f9fa] border border-[#e8eaed] rounded-lg p-3 text-center min-w-[90px]">
@@ -346,11 +447,12 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {newest.map((p) => <ProductCard key={p.id} product={p} />)}
+            {newest.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
           </div>
         </div>
       )}
-
     </div>
   );
 }
