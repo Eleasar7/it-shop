@@ -25,10 +25,8 @@ export function ProductCard({ product, showCompare = true }: ProductCardProps) {
   const [hoverImage, setHoverImage] = useState(false);
   const selected = isSelected(product.id);
 
-  // Image logic: support multiple images + category fallback
   const primaryImage   = product.images[0] ?? getCategoryFallback(product.category?.slug);
   const secondaryImage = product.images[1] ?? null;
-  const hasRealImage   = !!product.images[0];
 
   const fmt = (n: number) =>
     new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(n);
@@ -61,7 +59,14 @@ export function ProductCard({ product, showCompare = true }: ProductCardProps) {
     <div className="product-card group flex flex-col bg-white">
 
       {/* Image */}
-      <Link href={`/products/${product.slug}`} tabIndex={-1} aria-hidden="true" className="block" onMouseEnter={() => setHoverImage(true)} onMouseLeave={() => setHoverImage(false)}>
+      <Link
+        href={`/products/${product.slug}`}
+        tabIndex={-1}
+        aria-hidden="true"
+        className="block"
+        onMouseEnter={() => setHoverImage(true)}
+        onMouseLeave={() => setHoverImage(false)}
+      >
         <div className="relative bg-[#f8f9fa] overflow-hidden" style={{ paddingTop: "75%" }}>
           {/* Badges */}
           <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
@@ -79,7 +84,6 @@ export function ProductCard({ product, showCompare = true }: ProductCardProps) {
 
           {!imgError && primaryImage ? (
             <>
-              {/* Primary image */}
               <Image
                 src={primaryImage}
                 alt={product.name}
@@ -90,7 +94,6 @@ export function ProductCard({ product, showCompare = true }: ProductCardProps) {
                 sizes="(max-width: 640px) 50vw, 25vw"
                 onError={() => setImgError(true)}
               />
-              {/* Secondary image on hover */}
               {secondaryImage && (
                 <Image
                   src={secondaryImage}
@@ -108,7 +111,7 @@ export function ProductCard({ product, showCompare = true }: ProductCardProps) {
               <Package size={36} className="text-gray-200" />
             </div>
           )}
-          {/* Multi-image indicator dots */}
+
           {product.images.length > 1 && (
             <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
               {product.images.slice(0, Math.min(5, product.images.length)).map((_, i) => (
@@ -120,7 +123,7 @@ export function ProductCard({ product, showCompare = true }: ProductCardProps) {
       </Link>
 
       {/* Content */}
-      <div className="p-2.5 flex flex-col flex-1 gap-1">
+      <div className="p-2.5 sm:p-3 flex flex-col flex-1 gap-1">
         {/* Brand */}
         <p className="text-[10px] font-extrabold text-[#1a56db] uppercase tracking-wide">
           {product.brand}
@@ -128,17 +131,17 @@ export function ProductCard({ product, showCompare = true }: ProductCardProps) {
 
         {/* Name */}
         <Link href={`/products/${product.slug}`}>
-          <h3 className="text-xs font-semibold text-gray-800 leading-snug line-clamp-2 hover:text-[#1a56db] transition-colors min-h-[2.5rem]">
+          <h3 className="text-[11px] sm:text-xs font-semibold text-gray-800 leading-snug line-clamp-2 hover:text-[#1a56db] transition-colors min-h-[2.4rem]">
             {product.name}
           </h3>
         </Link>
 
         {/* SKU */}
         {product.sku && (
-          <p className="text-[9px] text-gray-400 font-mono">Art.: {product.sku}</p>
+          <p className="text-[9px] text-gray-400 font-mono hidden sm:block">Art.: {product.sku}</p>
         )}
 
-        {/* Stock + delivery */}
+        {/* Stock */}
         <div className="flex items-center gap-1.5">
           <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${
             isOutOfStock ? "bg-gray-300" : isLowStock ? "bg-amber-400" : "bg-green-500"
@@ -153,17 +156,17 @@ export function ProductCard({ product, showCompare = true }: ProductCardProps) {
               : "Auf Lager"}
           </span>
           {!isOutOfStock && (
-            <span className="text-[9px] text-gray-400 ml-auto">Liefert 1–2 Tage</span>
+            <span className="text-[9px] text-gray-400 ml-auto hidden sm:block">1–2 Tage</span>
           )}
         </div>
 
         <div className="flex-1" />
 
-        {/* Compare */}
+        {/* Compare — desktop only to save space on mobile */}
         {showCompare && (
           <button
             onClick={handleCompare}
-            className={`flex items-center gap-1 text-[10px] transition-colors w-fit mt-0.5 ${
+            className={`hidden sm:flex items-center gap-1 text-[10px] transition-colors w-fit mt-0.5 ${
               selected ? "text-[#1a56db] font-semibold" : "text-gray-400 hover:text-gray-600"
             }`}
           >
@@ -174,8 +177,8 @@ export function ProductCard({ product, showCompare = true }: ProductCardProps) {
 
         {/* Price */}
         <div className="mt-1">
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-base font-extrabold text-gray-900 tabular-nums">
+          <div className="flex items-baseline gap-1.5 flex-wrap">
+            <span className="text-sm sm:text-base font-extrabold text-gray-900 tabular-nums">
               {fmt(product.price)}
             </span>
             {product.comparePrice && (
@@ -184,14 +187,14 @@ export function ProductCard({ product, showCompare = true }: ProductCardProps) {
               </span>
             )}
           </div>
-          <p className="text-[9px] text-gray-400">inkl. MwSt., zzgl. Versand</p>
+          <p className="text-[9px] text-gray-400">inkl. MwSt.</p>
         </div>
 
         {/* Add to cart */}
         <button
           onClick={handleAddToCart}
           disabled={isOutOfStock}
-          className={`mt-1.5 w-full flex items-center justify-center gap-1.5 py-2 rounded text-xs font-semibold transition-all ${
+          className={`mt-1.5 w-full flex items-center justify-center gap-1.5 py-2.5 sm:py-2 rounded-lg text-xs font-semibold transition-all min-h-[40px] ${
             added
               ? "bg-green-600 text-white"
               : isOutOfStock
@@ -203,7 +206,7 @@ export function ProductCard({ product, showCompare = true }: ProductCardProps) {
             ? <><Check size={13} /> Hinzugefügt</>
             : isOutOfStock
             ? "Nicht verfügbar"
-            : <><ShoppingCart size={13} /> In den Warenkorb</>
+            : <><ShoppingCart size={13} /> <span className="hidden sm:inline">In den Warenkorb</span><span className="sm:hidden">Kaufen</span></>
           }
         </button>
       </div>

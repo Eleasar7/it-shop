@@ -59,7 +59,11 @@
     --bg-panel:     27 30 62;
   }
 
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100%;
+  }
 
   body {
     background: var(--surface-0);
@@ -67,6 +71,8 @@
     font-family: var(--font-geist-sans, 'Segoe UI', -apple-system, system-ui, sans-serif);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   /* Scrollbars */
@@ -184,7 +190,7 @@
   }
 
   /* ── Section ── */
-  .section { @apply max-w-screen-xl mx-auto px-4 sm:px-6; }
+  .section { @apply max-w-screen-xl mx-auto px-4 sm:px-6 w-full min-w-0; }
 
   /* ── Scrollbar hide ── */
   .scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
@@ -223,4 +229,45 @@
   --bg-base:      8 9 26;
   background: #08091a;
   color: #f8fafc;
+}
+
+/* ── Mobile-first improvements ── */
+
+/* Smooth drawer slide-in from left */
+@keyframes slideInFromLeft {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+.animate-slide-in-from-left {
+  animation: slideInFromLeft .3s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+/* Better touch tap targets */
+@media (max-width: 768px) {
+  /* Ensure comfortable tap targets on mobile */
+  .btn-primary, .btn-secondary {
+    min-height: 44px;
+  }
+
+  /* Better mobile card layout */
+  .product-card {
+    border-radius: 8px;
+  }
+}
+
+/* iOS overscroll fix */
+.overscroll-contain {
+  overscroll-behavior: contain;
+}
+
+/* Prevent text size adjust on iOS rotation */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Backdrop blur support */
+@supports (backdrop-filter: blur(4px)) {
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+  }
 }

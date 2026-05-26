@@ -9,15 +9,13 @@ import { useRouter } from "next/navigation";
 import {
   Search, ShoppingCart, User, Menu, X, ChevronDown, ChevronRight,
   LogOut, Package, LayoutDashboard, Phone, Truck,
-  Shield, FileText, GitCompare, Clock, Loader2,
+  Shield, FileText, GitCompare, Clock, Loader2, ArrowLeft,
 } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useCompareStore } from "@/store/compare";
 import { createClient } from "@/lib/supabase/client";
 import { siteConfig } from "@/lib/site-config";
 import type { UserProfile } from "@/types";
-
-// ─── Mega-menu category data — NO emojis, clean text navigation ──────────────
 
 interface NavChild {
   label: string;
@@ -211,8 +209,6 @@ const NAV: NavCategory[] = [
   },
 ];
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 interface SearchResult {
   id: string;
   name: string;
@@ -222,16 +218,12 @@ interface SearchResult {
 }
 
 interface HeaderProps {
-  /** Server-rendered initial user, avoids auth flash on first paint */
   initialUser?: UserProfile | null;
 }
 
 const fmt = (n: number) =>
   new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(n);
 
-// ─── Logo — uses /public/logo.svg or /public/logo.png if present, else text ─
-
-/** Tries logo.svg → logo.png → text badge */
 function LogoImage() {
   return (
     <Image
@@ -243,7 +235,6 @@ function LogoImage() {
     />
   );
 }
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export function Header({ initialUser = null }: HeaderProps) {
   const router = useRouter();
@@ -255,22 +246,46 @@ export function Header({ initialUser = null }: HeaderProps) {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
-  // initialUser hydrates immediately — no auth flash
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [user, setUser] = useState<UserProfile | null>(initialUser);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
 
   const searchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLInputElement>(null);
   const menuTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const { openCart } = useCartStore();
+  const { openCart, items } = useCartStore();
   const compareCount = 0;
 
-  useEffect(() => { setMounted(true); }, []);
-
-  // Re-validate auth client-side (keeps state fresh after login/logout without
-  // full page reload) — but only if initialUser is null (not yet known)
   useEffect(() => {
-    if (initialUser !== null) return; // already have server-provided user
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      setCartCount(items.reduce((sum, item) => sum + item.quantity, 0));
+    }
+  }, [items, mounted]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
+  useEffect(() => {
+    if (mobileSearchOpen && mobileSearchRef.current) {
+      mobileSearchRef.current.focus();
+    }
+  }, [mobileSearchOpen]);
+
+  useEffect(() => {
+    if (initialUser !== null) return;
     const supabase = createClient();
     supabase.auth.getUser().then(async ({ data: { user: u } }) => {
       if (!u) { setUser(null); return; }
@@ -280,7 +295,6 @@ export function Header({ initialUser = null }: HeaderProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Live search
   useEffect(() => {
     if (!query.trim() || query.length < 2) {
       setResults([]);
@@ -303,7 +317,6 @@ export function Header({ initialUser = null }: HeaderProps) {
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Close search on outside click
   useEffect(() => {
     function handler(e: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
@@ -321,6 +334,8 @@ export function Header({ initialUser = null }: HeaderProps) {
       router.push(`/products?search=${encodeURIComponent(query.trim())}`);
       setFocused(false);
       setShowSuggestions(false);
+      setMobileSearchOpen(false);
+      setMobileOpen(false);
     }
   }
 
@@ -342,7 +357,7 @@ export function Header({ initialUser = null }: HeaderProps) {
 
   return (
     <>
-      {/* ── TOP BAR ── */}
+      {/* ── TOP BAR (desktop only) ── */}
       <div className="hidden md:block bg-[#0f172a] text-[#94a3b8] text-[11px]">
         <div className="section">
           <div className="flex items-center justify-between h-8">
@@ -379,18 +394,110 @@ export function Header({ initialUser = null }: HeaderProps) {
       </div>
 
       {/* ── MAIN HEADER ── */}
-      <header className="sticky top-0 z-50 bg-white border-b border-[#e2e8f0] shadow-sm">
+      <header className="sticky top-0 z-50 bg-white border-b border-[#e2e8f0] shadow-sm overflow-x-hidden w-full">
+
+        {/* Mobile search overlay */}
+        {mobileSearchOpen && (
+          <div className="md:hidden fixed inset-0 z-[60] bg-white flex flex-col">
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-[#e2e8f0]">
+              <button
+                onClick={() => { setMobileSearchOpen(false); setQuery(""); setShowSuggestions(false); }}
+                className="p-2 -ml-2 rounded-full text-gray-600 hover:bg-gray-100 transition-colors flex-shrink-0"
+                aria-label="Schließen"
+              >
+                <ArrowLeft size={20} />
+              </button>
+              <form onSubmit={handleSearch} className="flex-1">
+                <div className="flex border border-[#1a56db] rounded-xl overflow-hidden ring-2 ring-[#1a56db]/15">
+                  <input
+                    ref={mobileSearchRef}
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Produkt, Marke oder SKU suchen …"
+                    className="flex-1 px-4 py-3 text-[15px] outline-none bg-white text-gray-900 placeholder-[#9ca3af]"
+                    autoComplete="off"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-[#1a56db] text-white px-4 flex items-center flex-shrink-0"
+                    aria-label="Suchen"
+                  >
+                    {loading ? <Loader2 size={18} className="animate-spin" /> : <Search size={18} />}
+                  </button>
+                </div>
+              </form>
+            </div>
+            {/* Mobile search results */}
+            <div className="flex-1 overflow-y-auto">
+              {showSuggestions && results.length > 0 ? (
+                <>
+                  <div className="px-4 py-2 bg-[#f8fafc] border-b border-[#e2e8f0]">
+                    <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Produkte</span>
+                  </div>
+                  {results.map((r) => (
+                    <Link
+                      key={r.id}
+                      href={`/products/${r.slug}`}
+                      onClick={() => { setMobileSearchOpen(false); setQuery(""); }}
+                      className="flex items-center gap-4 px-4 py-4 hover:bg-[#f1f5f9] transition-colors border-b border-[#f1f5f9] last:border-none"
+                    >
+                      <Package size={18} className="text-[#94a3b8] flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-900 truncate">{r.name}</p>
+                        <p className="text-xs text-[#64748b] mt-0.5">{r.brand}</p>
+                      </div>
+                      <span className="text-sm font-bold text-gray-900 flex-shrink-0">{fmt(r.price)}</span>
+                    </Link>
+                  ))}
+                  <Link
+                    href={`/products?search=${encodeURIComponent(query)}`}
+                    onClick={() => setMobileSearchOpen(false)}
+                    className="flex items-center justify-center gap-2 px-4 py-4 bg-[#f0f4ff] text-sm font-semibold text-[#1a56db]"
+                  >
+                    Alle Ergebnisse für „{query}&rdquo; anzeigen <ChevronRight size={14} />
+                  </Link>
+                </>
+              ) : showSuggestions && query.length >= 2 ? (
+                <div className="px-4 py-10 text-center text-gray-500">
+                  <Package size={36} className="mx-auto mb-3 text-gray-200" />
+                  <p className="text-sm font-medium">Keine Produkte gefunden</p>
+                  <p className="text-xs text-gray-400 mt-1">für „{query}&rdquo;</p>
+                </div>
+              ) : (
+                <div className="px-4 py-6">
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Beliebte Kategorien</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {["Laptops", "Server", "Smartphones", "RAM", "SSDs", "Netzwerk"].map((cat) => (
+                      <Link
+                        key={cat}
+                        href={`/products?category=${cat.toLowerCase()}`}
+                        onClick={() => setMobileSearchOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2.5 bg-[#f8fafc] rounded-lg text-sm font-medium text-gray-700 hover:bg-[#eff4ff] hover:text-[#1a56db] transition-colors"
+                      >
+                        <ChevronRight size={12} className="text-gray-400" />
+                        {cat}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+      {/* ── Main header row ── */}
         <div className="section">
-          <div className="flex items-center gap-3 h-14">
+          <div className="flex items-center gap-2 h-14 md:h-16 min-w-0 overflow-hidden">
 
             {/* Logo */}
-            <Link href="/" className="relative flex items-center flex-shrink-0 mr-3 h-10 w-[130px]">
+            <Link href="/" className="relative flex items-center flex-shrink-0 h-8 w-[90px] sm:w-[110px] md:h-10 md:w-[130px]">
               <LogoImage />
             </Link>
 
-            {/* Search */}
-            <div ref={searchRef} className="flex-1 relative max-w-2xl">
-              <form onSubmit={handleSearch}>
+            {/* Desktop Search */}
+            <div ref={searchRef} className="hidden md:flex flex-1 relative max-w-2xl">
+              <form onSubmit={handleSearch} className="w-full">
                 <div className={`flex border overflow-hidden transition-all ${
                   focused ? "border-[#1a56db] ring-2 ring-[#1a56db]/15" : "border-[#cbd5e1]"
                 } rounded`}>
@@ -413,7 +520,7 @@ export function Header({ initialUser = null }: HeaderProps) {
                 </div>
               </form>
 
-              {/* Live suggestions */}
+              {/* Desktop live suggestions */}
               {showSuggestions && (
                 <div className="absolute top-full left-0 right-0 mt-0.5 bg-white border border-[#e2e8f0] rounded shadow-xl z-50 overflow-hidden">
                   {results.length > 0 ? (
@@ -453,10 +560,22 @@ export function Header({ initialUser = null }: HeaderProps) {
               )}
             </div>
 
-            {/* Right actions */}
-            <div className="flex items-center gap-0.5 flex-shrink-0">
+            {/* Spacer on mobile */}
+            <div className="flex-1 min-w-0 md:hidden" />
 
-              {/* Compare */}
+            {/* Right actions */}
+            <div className="flex items-center gap-0.5 sm:gap-1 flex-shrink-0">
+
+              {/* Mobile search button */}
+              <button
+                onClick={() => setMobileSearchOpen(true)}
+                className="md:hidden flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-gray-600 hover:bg-gray-100 transition-colors"
+                aria-label="Suchen"
+              >
+                <Search size={19} />
+              </button>
+
+              {/* Compare (desktop only) */}
               {mounted && compareCount > 0 && (
                 <Link href="/compare"
                   className="relative hidden sm:flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded text-gray-600 hover:bg-gray-100 transition-colors"
@@ -473,36 +592,33 @@ export function Header({ initialUser = null }: HeaderProps) {
               <div className="relative">
                 <button
                   onClick={() => { setUserMenuOpen(!userMenuOpen); setFocused(false); }}
-                  className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded text-gray-600 hover:bg-gray-100 transition-colors"
+                  className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-gray-600 hover:bg-gray-100 transition-colors"
                   aria-label="Mein Konto"
                 >
-                  <User size={19} />
-                  <span className="text-[9px] font-medium hidden sm:block">
-                    {user ? (user.name?.split(" ")[0] ?? "Konto") : "Anmelden"}
-                  </span>
+                  <User size={20} />
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute right-0 top-full mt-1 w-56 bg-white border border-[#e2e8f0] rounded-lg shadow-xl py-1 z-50 animate-fade-in">
+                  <div className="absolute right-0 top-full mt-2 w-60 bg-white border border-[#e2e8f0] rounded-xl shadow-2xl py-1.5 z-50 animate-fade-in">
                     {user ? (
                       <>
                         <div className="px-4 py-3 border-b border-[#f1f5f9]">
                           <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">Angemeldet als</p>
                           <p className="text-sm font-semibold text-gray-900 truncate mt-0.5">{user.email}</p>
                         </div>
-                        <Link href="/account" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-[#f8fafc]" onClick={() => setUserMenuOpen(false)}>
-                          <Package size={14} className="text-gray-400" /> Mein Konto
+                        <Link href="/account" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-[#f8fafc]" onClick={() => setUserMenuOpen(false)}>
+                          <Package size={15} className="text-gray-400" /> Mein Konto
                         </Link>
-                        <Link href="/account/orders" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-[#f8fafc]" onClick={() => setUserMenuOpen(false)}>
-                          <FileText size={14} className="text-gray-400" /> Meine Bestellungen
+                        <Link href="/account/orders" className="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-[#f8fafc]" onClick={() => setUserMenuOpen(false)}>
+                          <FileText size={15} className="text-gray-400" /> Meine Bestellungen
                         </Link>
                         {user.role === "ADMIN" && (
-                          <Link href="/admin" className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-[#1a56db] font-semibold hover:bg-[#eff4ff]" onClick={() => setUserMenuOpen(false)}>
-                            <LayoutDashboard size={14} /> Admin-Bereich
+                          <Link href="/admin" className="flex items-center gap-3 px-4 py-3 text-sm text-[#1a56db] font-semibold hover:bg-[#eff4ff]" onClick={() => setUserMenuOpen(false)}>
+                            <LayoutDashboard size={15} /> Admin-Bereich
                           </Link>
                         )}
                         <div className="border-t border-[#f1f5f9] mt-1 pt-1">
-                          <button onClick={handleLogout} className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">
-                            <LogOut size={14} /> Abmelden
+                          <button onClick={handleLogout} className="flex items-center gap-3 w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50">
+                            <LogOut size={15} /> Abmelden
                           </button>
                         </div>
                       </>
@@ -510,11 +626,11 @@ export function Header({ initialUser = null }: HeaderProps) {
                       <>
                         <div className="px-4 py-3 border-b border-[#f1f5f9]">
                           <Link href="/login" onClick={() => setUserMenuOpen(false)}
-                            className="w-full btn-primary justify-center text-sm py-2">
+                            className="w-full btn-primary justify-center text-sm py-2.5">
                             Anmelden
                           </Link>
                           <Link href="/register" onClick={() => setUserMenuOpen(false)}
-                            className="w-full btn-secondary justify-center text-sm py-1.5 mt-1.5">
+                            className="w-full btn-secondary justify-center text-sm py-2 mt-2">
                             Registrieren
                           </Link>
                         </div>
@@ -532,20 +648,22 @@ export function Header({ initialUser = null }: HeaderProps) {
               {/* Cart */}
               <button
                 onClick={() => { openCart(); setFocused(false); }}
-                className="relative flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded text-gray-600 hover:bg-gray-100 transition-colors"
+                className="relative flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-gray-600 hover:bg-gray-100 transition-colors"
                 aria-label="Warenkorb"
               >
-                <ShoppingCart size={19} />
-                <span className="text-[9px] font-medium hidden sm:block">
-                  Warenkorb
-                </span>
+                <ShoppingCart size={20} />
+                {mounted && cartCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-5 h-5 bg-[#1a56db] text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
+                    {cartCount > 9 ? "9+" : cartCount}
+                  </span>
+                )}
               </button>
 
               {/* Mobile hamburger */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden flex items-center p-2 rounded text-gray-600 hover:bg-gray-100 ml-1"
-                aria-label="Menü"
+                className="md:hidden flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-gray-700 hover:bg-gray-100 transition-colors"
+                aria-label={mobileOpen ? "Menü schließen" : "Menü öffnen"}
               >
                 {mobileOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
@@ -553,7 +671,7 @@ export function Header({ initialUser = null }: HeaderProps) {
           </div>
         </div>
 
-        {/* ── CATEGORY NAV — clean text, no emojis ── */}
+        {/* ── DESKTOP CATEGORY NAV ── */}
         <nav className="hidden md:block border-t border-[#f1f5f9] bg-white relative z-40">
           <div className="section">
             <div className="flex items-center">
@@ -576,7 +694,6 @@ export function Header({ initialUser = null }: HeaderProps) {
                     <ChevronDown size={11} className={`text-gray-400 transition-transform ${activeMenu === cat.label ? "rotate-180" : ""}`} />
                   </Link>
 
-                  {/* ── MEGA MENU PANEL ── */}
                   {activeMenu === cat.label && (
                     <div
                       className="absolute top-full left-0 bg-white border border-[#e2e8f0] rounded-b-lg shadow-2xl z-50 animate-fade-in"
@@ -641,102 +758,141 @@ export function Header({ initialUser = null }: HeaderProps) {
           </div>
         </nav>
 
-        {/* ── MOBILE MENU ── */}
+        {/* ── MOBILE MENU DRAWER ── */}
         {mobileOpen && (
-          <div className="md:hidden border-t border-[#f1f5f9] bg-white max-h-[80vh] overflow-y-auto">
-            <div className="py-2">
-              <div className="px-4 pb-3 border-b border-[#f1f5f9]">
-                <form onSubmit={(e) => { handleSearch(e); setMobileOpen(false); }}>
-                  <div className="flex border border-[#cbd5e1] rounded overflow-hidden">
-                    <input
-                      type="text"
-                      value={query}
-                      onChange={(e) => setQuery(e.target.value)}
-                      placeholder="Suchen …"
-                      className="flex-1 px-3 py-2 text-sm outline-none"
-                    />
-                    <button type="submit" className="bg-[#1a56db] text-white px-3">
-                      <Search size={14} />
-                    </button>
-                  </div>
-                </form>
+          <>
+            {/* Backdrop */}
+            <div
+              className="md:hidden fixed inset-0 z-[55] bg-black/40 backdrop-blur-sm"
+              onClick={() => setMobileOpen(false)}
+            />
+            {/* Drawer */}
+            <div className="md:hidden fixed left-0 top-0 bottom-0 z-[60] w-[85vw] max-w-[360px] bg-white shadow-2xl flex flex-col animate-slide-in-from-left">
+              {/* Drawer header */}
+              <div className="flex items-center justify-between px-4 py-4 border-b border-[#e2e8f0]">
+                <Link href="/" onClick={() => setMobileOpen(false)} className="relative h-8 w-[100px] flex-shrink-0">
+                  <LogoImage />
+                </Link>
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  className="w-9 h-9 flex items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 transition-colors"
+                >
+                  <X size={18} />
+                </button>
               </div>
 
-              {/* Mobile categories — text only, no emojis */}
-              {NAV.map((cat) => (
-                <div key={cat.label} className="border-b border-[#f8fafc] last:border-none">
-                  <button
-                    onClick={() => setMobileExpanded(mobileExpanded === cat.label ? null : cat.label)}
-                    className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-gray-800 hover:bg-[#f8fafc] transition-colors"
-                  >
-                    <span>{cat.label}</span>
-                    <ChevronDown
-                      size={14}
-                      className={`text-gray-400 transition-transform ${mobileExpanded === cat.label ? "rotate-180" : ""}`}
-                    />
-                  </button>
-
-                  {mobileExpanded === cat.label && (
-                    <div className="bg-[#f8fafc] pb-2">
-                      {cat.columns.map((col) => (
-                        <div key={col.heading} className="px-4 pt-2">
-                          <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">{col.heading}</p>
-                          {col.items.map((item) => (
-                            <Link
-                              key={item.label}
-                              href={item.href}
-                              onClick={() => setMobileOpen(false)}
-                              className="flex items-center gap-1.5 py-1.5 pl-2 text-sm text-gray-700 hover:text-[#1a56db]"
-                            >
-                              <ChevronRight size={10} className="text-gray-300" />
-                              {item.label}
-                            </Link>
-                          ))}
-                        </div>
-                      ))}
-                      <div className="px-4 pt-3">
-                        <Link
-                          href={cat.href}
-                          onClick={() => setMobileOpen(false)}
-                          className="text-xs font-bold text-[#1a56db] hover:underline"
-                        >
-                          {cat.featured?.label ?? `Alle ${cat.label} →`}
-                        </Link>
+              {/* User status strip */}
+              <div className="px-4 py-3 bg-[#f8fafc] border-b border-[#e2e8f0]">
+                {user ? (
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-[#1a56db] flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">
+                          {(user.name ?? user.email ?? "?")[0].toUpperCase()}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-xs font-semibold text-gray-900">{user.name ?? "Konto"}</p>
+                        <p className="text-[10px] text-gray-400 truncate max-w-[160px]">{user.email}</p>
                       </div>
                     </div>
+                    <button onClick={() => { handleLogout(); setMobileOpen(false); }}
+                      className="text-xs text-red-500 font-medium">Abmelden</button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <Link href="/login" onClick={() => setMobileOpen(false)}
+                      className="flex-1 btn-primary text-sm py-2.5 justify-center">Anmelden</Link>
+                    <Link href="/register" onClick={() => setMobileOpen(false)}
+                      className="flex-1 btn-secondary text-sm py-2.5 justify-center">Registrieren</Link>
+                  </div>
+                )}
+              </div>
+
+              {/* Scrollable nav */}
+              <div className="flex-1 overflow-y-auto overscroll-contain">
+                {/* Category nav items */}
+                {NAV.map((cat) => (
+                  <div key={cat.label} className="border-b border-[#f1f5f9]">
+                    <button
+                      onClick={() => setMobileExpanded(mobileExpanded === cat.label ? null : cat.label)}
+                      className="w-full flex items-center justify-between px-4 py-4 text-sm font-semibold text-gray-800 hover:bg-[#f8fafc] transition-colors active:bg-[#f1f5f9]"
+                    >
+                      <span>{cat.label}</span>
+                      <ChevronDown
+                        size={16}
+                        className={`text-gray-400 transition-transform duration-200 ${mobileExpanded === cat.label ? "rotate-180" : ""}`}
+                      />
+                    </button>
+
+                    {mobileExpanded === cat.label && (
+                      <div className="bg-[#f8fafc] pb-3">
+                        {cat.columns.map((col) => (
+                          <div key={col.heading} className="px-5 pt-3">
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">{col.heading}</p>
+                            {col.items.map((item) => (
+                              <Link
+                                key={item.label}
+                                href={item.href}
+                                onClick={() => setMobileOpen(false)}
+                                className="flex items-center gap-2 py-2.5 text-sm text-gray-700 hover:text-[#1a56db] active:text-[#1a56db] transition-colors"
+                              >
+                                <ChevronRight size={12} className="text-gray-300 flex-shrink-0" />
+                                {item.label}
+                              </Link>
+                            ))}
+                          </div>
+                        ))}
+                        <div className="px-5 pt-3">
+                          <Link
+                            href={cat.href}
+                            onClick={() => setMobileOpen(false)}
+                            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1a56db] hover:underline"
+                          >
+                            {cat.featured?.label ?? `Alle ${cat.label} →`}
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {/* Footer links */}
+                <div className="px-4 py-5 space-y-1">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Mehr</p>
+                  <Link href="/beratung" onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 py-2.5 text-sm text-gray-700 hover:text-[#1a56db]">
+                    <Phone size={15} className="text-gray-400" /> Kaufberatung
+                  </Link>
+                  <Link href="/b2b" onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 py-2.5 text-sm font-semibold text-[#1a56db]">
+                    <FileText size={15} /> B2B & Firmenkunden
+                  </Link>
+                  {user && (
+                    <>
+                      <Link href="/account" onClick={() => setMobileOpen(false)}
+                        className="flex items-center gap-3 py-2.5 text-sm text-gray-700 hover:text-[#1a56db]">
+                        <Package size={15} className="text-gray-400" /> Mein Konto
+                      </Link>
+                      <Link href="/account/orders" onClick={() => setMobileOpen(false)}
+                        className="flex items-center gap-3 py-2.5 text-sm text-gray-700 hover:text-[#1a56db]">
+                        <FileText size={15} className="text-gray-400" /> Bestellungen
+                      </Link>
+                    </>
                   )}
                 </div>
-              ))}
+              </div>
 
-              <div className="px-4 py-3 border-t border-[#e2e8f0] flex flex-col gap-2 mt-1">
-                {user ? (
-                  <>
-                    <Link href="/account" onClick={() => setMobileOpen(false)}
-                      className="btn-secondary justify-center text-sm">Mein Konto</Link>
-                    <Link href="/account/orders" onClick={() => setMobileOpen(false)}
-                      className="text-sm text-gray-700 font-medium text-center py-2 hover:bg-gray-50 rounded">
-                      Bestellungen
-                    </Link>
-                    <button onClick={() => { handleLogout(); setMobileOpen(false); }}
-                      className="text-sm text-red-600 font-medium text-center py-2 hover:bg-red-50 rounded">
-                      Abmelden
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link href="/login" onClick={() => setMobileOpen(false)}
-                      className="btn-primary justify-center text-sm">Anmelden</Link>
-                    <Link href="/register" onClick={() => setMobileOpen(false)}
-                      className="btn-secondary justify-center text-sm">Registrieren</Link>
-                  </>
-                )}
-                <Link href="/b2b" onClick={() => setMobileOpen(false)}
-                  className="text-xs text-center text-[#1a56db] font-semibold py-1">
-                  B2B-Firmenkonto & Anfragen →
-                </Link>
+              {/* Drawer footer */}
+              <div className="px-4 py-4 border-t border-[#e2e8f0] bg-[#f8fafc]">
+                <div className="flex items-center justify-between text-[11px] text-gray-400">
+                  <span className="flex items-center gap-1"><Truck size={11} className="text-green-500" /> Versand ab 99 €</span>
+                  <span className="flex items-center gap-1"><Shield size={11} className="text-green-500" /> 30 Tage Rückgabe</span>
+                  <span className="flex items-center gap-1"><Phone size={11} className="text-blue-500" /> B2B-Hotline</span>
+                </div>
               </div>
             </div>
-          </div>
+          </>
         )}
       </header>
     </>

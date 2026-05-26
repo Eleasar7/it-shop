@@ -11,9 +11,9 @@ export default async function ShopLayout({ children }: { children: React.ReactNo
   const user = await getCurrentUser();
 
   return (
-    <div style={{ background: "#f8f9fa", minHeight: "100vh" }}>
+    <div style={{ background: "#f8f9fa", minHeight: "100vh" }} className="overflow-x-hidden w-full min-w-0">
       <Header initialUser={user} />
-      <main>{children}</main>
+      <main className="overflow-x-hidden min-w-0 w-full">{children}</main>
       <Footer />
       <CartDrawer />
       <CompareBar />
