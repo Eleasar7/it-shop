@@ -394,7 +394,7 @@ export function Header({ initialUser = null }: HeaderProps) {
       </div>
 
       {/* ── MAIN HEADER ── */}
-      <header className="sticky top-0 z-50 bg-white border-b border-[#e2e8f0] shadow-sm overflow-x-hidden w-full">
+      <header className="sticky top-0 z-50 bg-white border-b border-[#e2e8f0] shadow-sm w-full">
 
         {/* Mobile search overlay */}
         {mobileSearchOpen && (
@@ -488,7 +488,7 @@ export function Header({ initialUser = null }: HeaderProps) {
 
       {/* ── Main header row ── */}
         <div className="section">
-          <div className="flex items-center gap-2 h-14 md:h-16 min-w-0 overflow-hidden">
+          <div className="flex items-center gap-2 h-14 md:h-16 min-w-0">
 
             {/* Logo */}
             <Link href="/" className="relative flex items-center flex-shrink-0 h-8 w-[90px] sm:w-[110px] md:h-10 md:w-[130px]">
@@ -589,7 +589,7 @@ export function Header({ initialUser = null }: HeaderProps) {
               )}
 
               {/* Account */}
-              <div className="relative">
+              <div className="relative z-[9999]">
                 <button
                   onClick={() => { setUserMenuOpen(!userMenuOpen); setFocused(false); }}
                   className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-gray-600 hover:bg-gray-100 transition-colors"
@@ -598,7 +598,7 @@ export function Header({ initialUser = null }: HeaderProps) {
                   <User size={20} />
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-60 bg-white border border-[#e2e8f0] rounded-xl shadow-2xl py-1.5 z-50 animate-fade-in">
+                  <div className="absolute right-0 top-full mt-2 w-60 bg-white border border-[#e2e8f0] rounded-xl shadow-2xl py-1.5 z-[9999] animate-fade-in">
                     {user ? (
                       <>
                         <div className="px-4 py-3 border-b border-[#f1f5f9]">
