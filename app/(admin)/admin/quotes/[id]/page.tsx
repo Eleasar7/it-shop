@@ -10,7 +10,7 @@ import { StatusBadge } from "@/components/admin/StatusBadge";
 import type { Metadata } from "next";
 
 interface PageProps { params: Promise<{ id: string }> }
-export const metadata: Metadata = { title: "Angebot | TechCore Admin" };
+export const metadata: Metadata = { title: "Angebot | Envetra Admin" };
 
 export default async function AdminQuoteDetailPage({ params }: PageProps) {
   await requireAdmin();

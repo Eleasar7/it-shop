@@ -9,7 +9,7 @@ import { ChevronLeft, Package, CreditCard, CheckCircle, Truck, MapPin } from "lu
 import type { Metadata } from "next";
 
 interface PageProps { params: Promise<{ id: string }> }
-export const metadata: Metadata = { title: "Bestelldetails | TechCore" };
+export const metadata: Metadata = { title: "Bestelldetails | Envetra" };
 
 const STATUS_STEPS = ["CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"];
 const STATUS_LABELS: Record<string, string> = {

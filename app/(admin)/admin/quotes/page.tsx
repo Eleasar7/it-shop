@@ -7,7 +7,7 @@ import { Plus, FileText, ChevronRight } from "lucide-react";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Angebote | TechCore Admin" };
+export const metadata: Metadata = { title: "Angebote | Envetra Admin" };
 
 interface PageProps {
   searchParams: Promise<{ status?: string; q?: string }>;

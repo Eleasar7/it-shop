@@ -7,7 +7,7 @@ import type { Metadata } from "next";
 import { BulkImageImportClient } from "./BulkImageImportClient";
 
 export const metadata: Metadata = {
-  title: "Produktbilder verwalten | TechCore Admin",
+  title: "Produktbilder verwalten | Envetra Admin",
 };
 
 export default async function MediaManagementPage() {

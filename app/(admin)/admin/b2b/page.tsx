@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Building2, ChevronRight, Search } from "lucide-react";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "B2B-Anfragen | TechCore Admin" };
+export const metadata: Metadata = { title: "B2B-Anfragen | Envetra Admin" };
 
 const STATUS_CONFIG: Record<string, { label: string; badge: string }> = {
   OPEN:      { label: "Neu",            badge: "badge-warning" },

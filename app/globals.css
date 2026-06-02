@@ -231,6 +231,12 @@
   color: #f8fafc;
 }
 
+/* Admin: override .card to use dark surface so slate-100/200 text is readable */
+.admin-layout .card {
+  background: #1e2130;
+  border-color: rgba(100, 116, 139, 0.25);
+}
+
 /* ── Mobile-first improvements ── */
 
 /* Smooth drawer slide-in from left */

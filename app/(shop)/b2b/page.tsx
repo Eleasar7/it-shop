@@ -61,8 +61,8 @@ export default function B2BPage() {
           <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center mx-auto mb-4">
             <CheckCircle size={32} className="text-green-400" />
           </div>
-          <h1 className="text-xl font-bold text-slate-100 mb-2">Anfrage gesendet!</h1>
-          <p className="text-slate-400 text-sm leading-relaxed">
+          <h1 className="text-xl font-bold text-gray-900 mb-2">Anfrage gesendet!</h1>
+          <p className="text-gray-600 text-sm leading-relaxed">
             Wir haben deine Anfrage erhalten und melden uns innerhalb von 24 Stunden per E-Mail bei dir.
           </p>
         </div>
@@ -75,11 +75,11 @@ export default function B2BPage() {
 
       {/* Header */}
       <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-medium mb-4">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-100 border border-indigo-200 text-indigo-700 text-xs font-medium mb-4">
           <Building2 size={12} /> Firmenkunden & Großmengen
         </div>
-        <h1 className="text-3xl font-bold text-slate-100 mb-3">Firmenanfrage stellen</h1>
-        <p className="text-slate-400 max-w-lg mx-auto leading-relaxed">
+        <h1 className="text-3xl font-bold text-gray-900 mb-3">Firmenanfrage stellen</h1>
+        <p className="text-gray-600 max-w-lg mx-auto leading-relaxed">
           Du benötigst Hardware in größeren Mengen, spezielle Konfigurationen oder individuelle Preise? Wir beraten dich gerne.
         </p>
       </div>
@@ -92,8 +92,8 @@ export default function B2BPage() {
           { label: "Flexible Zahlung", sub: "Rechnung, SEPA, Vorkasse" },
         ].map(({ label, sub }) => (
           <div key={label} className="card p-4 text-center">
-            <p className="text-sm font-semibold text-slate-200">{label}</p>
-            <p className="text-xs text-slate-500 mt-1">{sub}</p>
+            <p className="text-sm font-semibold text-gray-900">{label}</p>
+            <p className="text-xs text-gray-600 mt-1">{sub}</p>
           </div>
         ))}
       </div>
@@ -109,25 +109,25 @@ export default function B2BPage() {
 
         {/* Kontakt */}
         <div className="card p-6 space-y-5">
-          <h2 className="font-semibold text-slate-200 text-base">Kontaktdaten</h2>
+          <h2 className="font-semibold text-gray-900 text-base">Kontaktdaten</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Unternehmen *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Unternehmen *</label>
               <input value={form.companyName} onChange={(e) => setForm((f) => ({ ...f, companyName: e.target.value }))}
                 placeholder="Musterfirma GmbH" className="input" required />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Ansprechpartner *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Ansprechpartner *</label>
               <input value={form.contactName} onChange={(e) => setForm((f) => ({ ...f, contactName: e.target.value }))}
                 placeholder="Max Mustermann" className="input" required />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">E-Mail *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">E-Mail *</label>
               <input type="email" value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                 placeholder="max@firma.de" className="input" required />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Telefon</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Telefon</label>
               <input type="tel" value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
                 placeholder="+49 711 …" className="input" />
             </div>
@@ -136,7 +136,7 @@ export default function B2BPage() {
 
         {/* Produkte */}
         <div className="card p-6 space-y-4">
-          <h2 className="font-semibold text-slate-200 text-base">Gewünschte Produkte</h2>
+          <h2 className="font-semibold text-gray-900 text-base">Gewünschte Produkte</h2>
           <div className="space-y-3">
             {items.map((item, idx) => (
               <div key={idx} className="flex gap-2 items-start">
@@ -164,7 +164,7 @@ export default function B2BPage() {
                 </div>
                 {items.length > 1 && (
                   <button type="button" onClick={() => removeItem(idx)}
-                    className="flex-shrink-0 p-2 text-slate-500 hover:text-red-400 hover:bg-red-950/20 rounded-lg transition-colors mt-0.5">
+                    className="flex-shrink-0 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors mt-0.5">
                     <Trash2 size={15} />
                   </button>
                 )}
@@ -172,21 +172,21 @@ export default function B2BPage() {
             ))}
           </div>
           <button type="button" onClick={addItem}
-            className="flex items-center gap-1.5 text-sm text-indigo-400 hover:text-indigo-300 transition-colors">
+            className="flex items-center gap-1.5 text-sm text-[#1a56db] hover:text-[#1043b2] transition-colors font-medium">
             <Plus size={14} /> Weiteres Produkt hinzufügen
           </button>
         </div>
 
         {/* Nachricht */}
         <div className="card p-6 space-y-3">
-          <h2 className="font-semibold text-slate-200 text-base">Nachricht *</h2>
+          <h2 className="font-semibold text-gray-900 text-base">Nachricht *</h2>
           <textarea
             value={form.message}
             onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
             placeholder="Beschreibe dein Projekt, besondere Anforderungen, gewünschten Liefertermin oder Fragen zur Konfiguration…"
             rows={5} className="input resize-none" required minLength={20}
           />
-          <p className="text-xs text-slate-500">{form.message.length} / 2000 Zeichen</p>
+          <p className="text-xs text-gray-500">{form.message.length} / 2000 Zeichen</p>
         </div>
 
         <button type="submit" disabled={loading} className="btn-primary w-full py-3.5 text-base">
@@ -196,7 +196,7 @@ export default function B2BPage() {
             <><Send size={16} /> Anfrage absenden</>
           )}
         </button>
-        <p className="text-xs text-slate-500 text-center">
+        <p className="text-xs text-gray-500 text-center">
           Wir antworten innerhalb von 24 Stunden · Keine Verpflichtung
         </p>
       </form>

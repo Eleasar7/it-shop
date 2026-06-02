@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Plus, Truck, ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Lieferanten | TechCore Admin" };
+export const metadata: Metadata = { title: "Lieferanten | Envetra Admin" };
 
 export default async function SuppliersPage() {
   await requireAdmin();

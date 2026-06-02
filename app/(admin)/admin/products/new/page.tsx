@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Neues Produkt | TechCore Admin" };
+export const metadata: Metadata = { title: "Neues Produkt | Envetra Admin" };
 
 export default async function NewProductPage() {
   await requireAdmin();

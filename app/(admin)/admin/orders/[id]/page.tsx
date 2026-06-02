@@ -13,7 +13,7 @@ import { OrderStatusForm } from "./OrderStatusForm";
 import type { Metadata } from "next";
 
 interface PageProps { params: Promise<{ id: string }> }
-export const metadata: Metadata = { title: "Bestelldetails | TechCore Admin" };
+export const metadata: Metadata = { title: "Bestelldetails | Envetra Admin" };
 
 const STATUS_LABELS: Record<string, string> = {
   PENDING: "Ausstehend", CONFIRMED: "Bestätigt", PROCESSING: "In Bearbeitung",

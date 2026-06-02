@@ -14,7 +14,7 @@ import { CustomerCRMForm } from "./CustomerCRMForm";
 import type { Metadata } from "next";
 
 interface PageProps { params: Promise<{ id: string }> }
-export const metadata: Metadata = { title: "Kundenprofil | TechCore Admin" };
+export const metadata: Metadata = { title: "Kundenprofil | Envetra Admin" };
 
 export default async function CustomerDetailPage({ params }: PageProps) {
   const admin = await requireAdmin();

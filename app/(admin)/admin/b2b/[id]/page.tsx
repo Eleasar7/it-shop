@@ -9,7 +9,7 @@ import { B2BStatusForm } from "./B2BStatusForm";
 import type { Metadata } from "next";
 
 interface PageProps { params: Promise<{ id: string }> }
-export const metadata: Metadata = { title: "B2B-Anfrage | TechCore Admin" };
+export const metadata: Metadata = { title: "B2B-Anfrage | Envetra Admin" };
 
 const STATUS_CONFIG: Record<string, { label: string; badge: string }> = {
   OPEN:      { label: "Neu / Offen",       badge: "badge-warning" },
@@ -154,7 +154,7 @@ export default async function AdminB2BDetailPage({ params }: PageProps) {
           {/* Quick contact */}
           <div className="card p-4 space-y-2">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-3">Kontakt</p>
-            <a href={`mailto:${req.email}?subject=Ihre B2B-Anfrage bei TechCore`}
+            <a href={`mailto:${req.email}?subject=Ihre B2B-Anfrage bei Envetra`}
               className="btn-primary w-full text-sm justify-center">
               <Mail size={14} /> E-Mail senden
             </a>

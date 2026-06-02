@@ -9,7 +9,7 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Neues Angebot | TechCore Admin" };
+export const metadata: Metadata = { title: "Neues Angebot | Envetra Admin" };
 
 interface PageProps {
   searchParams: Promise<{ b2bId?: string; email?: string; company?: string; name?: string }>;

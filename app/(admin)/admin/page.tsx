@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Dashboard | TechCore Admin" };
+export const metadata: Metadata = { title: "Dashboard | Envetra Admin" };
 
 async function getStats() {
   const now        = new Date();
@@ -296,7 +296,7 @@ export default async function AdminDashboard() {
                 className="flex items-center justify-between px-5 py-3 hover:bg-slate-800/40 transition-colors group">
                 <div className="min-w-0">
                   <p className="text-sm text-slate-300 group-hover:text-white transition-colors truncate">{p.name}</p>
-                  <p className="text-xs text-slate-600">{p.brand}</p>
+                  <p className="text-xs text-slate-500">{p.brand}</p>
                 </div>
                 <span className={`badge flex-shrink-0 ml-2 ${p.stock === 0 ? "badge-danger" : "badge-warning"}`}>
                   {p.stock === 0 ? "Leer" : `${p.stock} Stk.`}
@@ -327,16 +327,16 @@ export default async function AdminDashboard() {
               {s.topSellers.map((t, idx) => t.product && (
                 <Link key={t.productId} href={`/admin/products/${t.productId}/edit`}
                   className="flex items-center gap-4 px-5 py-3.5 hover:bg-slate-800/40 transition-colors group">
-                  <span className="text-xs font-black text-slate-700 w-4 flex-shrink-0">#{idx + 1}</span>
+                  <span className="text-xs font-black text-slate-500 w-4 flex-shrink-0">#{idx + 1}</span>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors truncate">
                       {t.product.name}
                     </p>
-                    <p className="text-xs text-slate-600">{t.product.brand}</p>
+                    <p className="text-xs text-slate-500">{t.product.brand}</p>
                   </div>
                   <div className="text-right flex-shrink-0">
                     <p className="text-sm font-bold text-slate-200 tabular-nums">{t._sum.quantity} Stk.</p>
-                    <p className="text-xs text-slate-600">verkauft</p>
+                    <p className="text-xs text-slate-500">verkauft</p>
                   </div>
                 </Link>
               ))}
@@ -363,7 +363,7 @@ export default async function AdminDashboard() {
                   <p className="text-sm font-medium text-slate-300 group-hover:text-white transition-colors truncate">
                     {req.companyName}
                   </p>
-                  <p className="text-xs text-slate-600">{req.contactName}</p>
+                  <p className="text-xs text-slate-500">{req.contactName}</p>
                 </div>
                 <span className={`badge flex-shrink-0 ml-2 ${req.status === "OPEN" ? "badge-warning" : "badge-info"}`}>
                   {req.status === "OPEN" ? "Neu" : "In Prüfung"}
@@ -379,7 +379,7 @@ export default async function AdminDashboard() {
 
       {/* Quick actions */}
       <div>
-        <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider mb-3">Schnellaktionen</p>
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Schnellaktionen</p>
         <div className="flex flex-wrap gap-3">
           <Link href="/admin/products/new" className="btn-primary">
             <Package size={14} /> Produkt erstellen

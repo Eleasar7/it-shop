@@ -4,8 +4,9 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Eye, EyeOff, Cpu, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, AlertCircle, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { loginSchema } from "@/lib/validations";
 
@@ -151,13 +152,15 @@ export default function LoginPage() {
       <div className="relative w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2.5 mb-6 group">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center group-hover:bg-indigo-500 transition-colors">
-              <Cpu size={20} className="text-white" />
-            </div>
-            <span className="font-bold text-gray-900 text-xl tracking-tight">
-              TechCore<span className="text-[#1a56db]">.</span>
-            </span>
+          <Link href="/" className="inline-flex justify-center mb-6">
+            <Image
+              src="/logo.png"
+              alt="Envetra"
+              width={140}
+              height={40}
+              className="object-contain"
+              priority
+            />
           </Link>
           <h1 className="text-2xl font-bold text-gray-900">Willkommen zurück</h1>
           <p className="text-gray-600 text-sm mt-1">Melde dich in deinem Konto an</p>

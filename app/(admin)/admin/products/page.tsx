@@ -16,7 +16,7 @@ import {
 import { ProductRowActions } from "./RowActions";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Produkte | TechCore Admin" };
+export const metadata: Metadata = { title: "Produkte | Envetra Admin" };
 
 interface PageProps {
   searchParams: Promise<{ q?: string; category?: string; status?: string; success?: string }>;

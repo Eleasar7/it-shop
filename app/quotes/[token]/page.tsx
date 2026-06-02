@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     select: { quoteNumber: true, customerCompany: true },
   });
   if (!quote) return { title: "Angebot nicht gefunden" };
-  return { title: `Angebot #${quote.quoteNumber.slice(-6).toUpperCase()} | TechCore` };
+  return { title: `Angebot #${quote.quoteNumber.slice(-6).toUpperCase()} | Envetra` };
 }
 
 export default async function PublicQuotePage({ params }: PageProps) {
@@ -50,7 +50,7 @@ export default async function PublicQuotePage({ params }: PageProps) {
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">TechCore</span>
+              <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Envetra</span>
               <span className="text-slate-700">·</span>
               <span className="text-xs font-mono text-slate-500">
                 Angebot #{quote.quoteNumber.slice(-6).toUpperCase()}
@@ -129,7 +129,7 @@ export default async function PublicQuotePage({ params }: PageProps) {
 
         {/* Footer */}
         <p className="text-center text-xs text-slate-700 font-medium">
-          TechCore GmbH · Königstraße 1 · 70173 Stuttgart · info@techcore-shop.de
+          Envetra GmbH · Königstraße 1 · 70173 Stuttgart · info@envetra.de
         </p>
       </div>
     </div>

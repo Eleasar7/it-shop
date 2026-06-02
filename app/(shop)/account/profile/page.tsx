@@ -17,18 +17,18 @@ export default async function ProfilePage() {
       <div>
         <Link
           href="/account"
-          className="text-xs text-slate-500 hover:text-slate-300 transition-colors mb-2 inline-flex items-center gap-1"
+          className="text-xs text-gray-500 hover:text-gray-700 transition-colors mb-2 inline-flex items-center gap-1"
         >
           <ChevronLeft size={13} /> Zurück zum Konto
         </Link>
-        <h1 className="text-2xl font-bold text-slate-100">Profil bearbeiten</h1>
-        <p className="text-slate-500 text-sm mt-1">Verwalte deine persönlichen Daten</p>
+        <h1 className="text-2xl font-bold text-gray-900">Profil bearbeiten</h1>
+        <p className="text-gray-600 text-sm mt-1">Verwalte deine persönlichen Daten</p>
       </div>
 
       {/* Current info */}
       <div className="card p-5 space-y-4">
-        <h2 className="font-semibold text-slate-200 text-sm flex items-center gap-2">
-          <User size={14} className="text-indigo-400" />
+        <h2 className="font-semibold text-gray-900 text-sm flex items-center gap-2">
+          <User size={14} className="text-[#1a56db]" />
           Aktuelle Daten
         </h2>
         <div className="grid sm:grid-cols-2 gap-3">
@@ -40,12 +40,12 @@ export default async function ProfilePage() {
           ].map(({ icon: Icon, label, value }) => (
             <div
               key={label}
-              className="flex items-start gap-3 p-3 rounded-xl bg-slate-800/40 border border-slate-700/30"
+              className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 border border-gray-200"
             >
-              <Icon size={14} className="text-slate-500 mt-0.5 flex-shrink-0" />
+              <Icon size={14} className="text-gray-400 mt-0.5 flex-shrink-0" />
               <div className="min-w-0">
-                <p className="text-xs text-slate-500">{label}</p>
-                <p className="text-sm text-slate-200 truncate">{value}</p>
+                <p className="text-xs text-gray-500">{label}</p>
+                <p className="text-sm text-gray-900 truncate font-medium">{value}</p>
               </div>
             </div>
           ))}
@@ -63,8 +63,8 @@ export default async function ProfilePage() {
 
       {/* Password */}
       <div className="card p-5 space-y-3">
-        <h2 className="font-semibold text-slate-200 text-sm">Passwort ändern</h2>
-        <p className="text-slate-400 text-sm">
+        <h2 className="font-semibold text-gray-900 text-sm">Passwort ändern</h2>
+        <p className="text-gray-600 text-sm">
           Nutze die Passwort-vergessen-Funktion, um dein Passwort sicher zu
           ändern.
         </p>

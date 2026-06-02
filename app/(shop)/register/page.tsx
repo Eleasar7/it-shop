@@ -4,8 +4,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Cpu, ArrowRight, AlertCircle, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, AlertCircle, CheckCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { registerSchema } from "@/lib/validations";
 
@@ -112,11 +113,15 @@ export default function RegisterPage() {
 
       <div className="relative w-full max-w-sm">
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2.5 mb-6">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
-              <Cpu size={20} className="text-white" />
-            </div>
-            <span className="font-bold text-slate-100 text-xl">TechCore<span className="text-indigo-400">.</span></span>
+          <Link href="/" className="inline-flex justify-center mb-6">
+            <Image
+              src="/logo.png"
+              alt="Envetra"
+              width={140}
+              height={40}
+              className="object-contain"
+              priority
+            />
           </Link>
           <h1 className="text-2xl font-bold text-slate-100">Konto erstellen</h1>
           <p className="text-slate-400 text-sm mt-1">Schnell und kostenlos registrieren</p>

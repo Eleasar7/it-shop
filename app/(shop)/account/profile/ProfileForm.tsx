@@ -42,15 +42,15 @@ export function ProfileForm({ initialData }: Props) {
 
   return (
     <div className="card p-5 space-y-5">
-      <h2 className="font-semibold text-slate-200 text-sm">Daten aktualisieren</h2>
+      <h2 className="font-semibold text-gray-900 text-sm">Daten aktualisieren</h2>
 
       {success && (
-        <div className="flex items-center gap-2 text-green-400 text-sm p-3 rounded-lg bg-green-950/30 border border-green-500/20 animate-fade-in">
+        <div className="flex items-center gap-2 text-green-700 text-sm p-3 rounded-lg bg-green-50 border border-green-200 animate-fade-in">
           <CheckCircle2 size={15} /> Profil erfolgreich gespeichert
         </div>
       )}
       {error && (
-        <div className="flex items-center gap-2 text-red-400 text-sm p-3 rounded-lg bg-red-950/30 border border-red-500/20">
+        <div className="flex items-center gap-2 text-red-700 text-sm p-3 rounded-lg bg-red-50 border border-red-200">
           <AlertCircle size={15} /> {error}
         </div>
       )}
@@ -58,7 +58,7 @@ export function ProfileForm({ initialData }: Props) {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Name
             </label>
             <input
@@ -70,7 +70,7 @@ export function ProfileForm({ initialData }: Props) {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Telefon
             </label>
             <input
@@ -83,8 +83,8 @@ export function ProfileForm({ initialData }: Props) {
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">
-              Unternehmen <span className="text-slate-500 font-normal">(optional)</span>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              Unternehmen <span className="text-gray-400 font-normal">(optional)</span>
             </label>
             <input
               value={form.company}

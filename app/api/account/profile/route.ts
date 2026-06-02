@@ -1,10 +1,42 @@
 // app/api/account/profile/route.ts
+// GET  /api/account/profile – return current user profile (used by Header)
 // PATCH /api/account/profile – update user profile fields
 
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthUser } from "@/lib/auth";
 import { z } from "zod";
+
+export async function GET() {
+  const authUser = await getAuthUser();
+  if (!authUser) {
+    return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 });
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: authUser.id },
+      select: { id: true, email: true, name: true, role: true, company: true, phone: true },
+    });
+
+    if (!user) {
+      // Row may not exist yet (edge case) – return minimal profile from Supabase
+      return NextResponse.json({
+        id: authUser.id,
+        email: authUser.email ?? "",
+        name: null,
+        role: "USER",
+        company: null,
+        phone: null,
+      });
+    }
+
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error("[GET /api/account/profile]", error);
+    return NextResponse.json({ error: "Interner Serverfehler" }, { status: 500 });
+  }
+}
 
 const updateSchema = z.object({
   name:    z.string().max(100).optional(),

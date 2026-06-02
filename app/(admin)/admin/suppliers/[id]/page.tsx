@@ -11,7 +11,7 @@ import { StatusBadge } from "@/components/admin/StatusBadge";
 import type { Metadata } from "next";
 
 interface PageProps { params: Promise<{ id: string }> }
-export const metadata: Metadata = { title: "Lieferant | TechCore Admin" };
+export const metadata: Metadata = { title: "Lieferant | Envetra Admin" };
 
 export default async function SupplierDetailPage({ params }: PageProps) {
   await requireAdmin();

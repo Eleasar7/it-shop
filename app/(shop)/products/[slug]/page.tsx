@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const product = await getProduct(slug);
   if (!product) return { title: "Produkt nicht gefunden" };
   return {
-    title: `${product.name} | TechCore`,
+    title: `${product.name} | Envetra`,
     description: product.description.slice(0, 160),
     openGraph: {
       images: product.images[0] ? [{ url: product.images[0] }] : [],

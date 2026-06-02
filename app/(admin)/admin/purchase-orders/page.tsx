@@ -7,7 +7,7 @@ import { Plus, ShoppingCart, ChevronRight } from "lucide-react";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Bestellungen | TechCore Admin" };
+export const metadata: Metadata = { title: "Bestellungen | Envetra Admin" };
 
 export default async function PurchaseOrdersPage() {
   await requireAdmin();

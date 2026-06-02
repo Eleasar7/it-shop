@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ChevronRight, ShoppingBag, Search } from "lucide-react";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Bestellungen | TechCore Admin" };
+export const metadata: Metadata = { title: "Bestellungen | Envetra Admin" };
 
 const STATUS_CONFIG: Record<string, { label: string; badge: string }> = {
   PENDING:    { label: "Ausstehend",     badge: "badge-warning" },

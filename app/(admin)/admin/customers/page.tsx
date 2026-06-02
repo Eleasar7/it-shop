@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { Users, ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Kunden | TechCore Admin" };
+export const metadata: Metadata = { title: "Kunden | Envetra Admin" };
 
 export default async function AdminCustomersPage() {
   await requireAdmin();

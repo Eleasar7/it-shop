@@ -253,6 +253,7 @@ export function Header({ initialUser = null }: HeaderProps) {
   const [cartCount, setCartCount] = useState(0);
 
   const searchRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLInputElement>(null);
   const menuTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { openCart, items } = useCartStore();
@@ -285,13 +286,52 @@ export function Header({ initialUser = null }: HeaderProps) {
   }, [mobileSearchOpen]);
 
   useEffect(() => {
-    if (initialUser !== null) return;
     const supabase = createClient();
-    supabase.auth.getUser().then(async ({ data: { user: u } }) => {
-      if (!u) { setUser(null); return; }
-      const res = await fetch("/api/account/profile");
-      if (res.ok) setUser(await res.json());
+
+    // ── Helper: fetch profile from API, fall back to Supabase email ──────────
+    async function loadUser() {
+      const { data: { user: sbUser } } = await supabase.auth.getUser();
+      if (!sbUser) {
+        setUser(null);
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/account/profile", { cache: "no-store" });
+        if (res.ok) {
+          const profile = await res.json();
+          setUser(profile);
+          return;
+        }
+      } catch {
+        // network error – fall through to minimal fallback
+      }
+
+      // Profile API failed but Supabase confirms user is logged in → show email
+      setUser({
+        id:      sbUser.id,
+        email:   sbUser.email ?? "",
+        name:    (sbUser.user_metadata?.name as string | null) ?? null,
+        role:    "USER",
+        company: null,
+        phone:   null,
+      });
+    }
+
+    // Always run on mount – don't skip even if initialUser was provided,
+    // because client-side navigation won't re-render the Server layout.
+    loadUser();
+
+    // Stay in sync with auth changes (login / logout in other tabs too)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session?.user) {
+        setUser(null);
+      } else {
+        loadUser();
+      }
     });
+
+    return () => subscription.unsubscribe();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -328,6 +368,16 @@ export function Header({ initialUser = null }: HeaderProps) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     if (query.trim()) {
@@ -352,7 +402,9 @@ export function Header({ initialUser = null }: HeaderProps) {
     const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
+    setUserMenuOpen(false);
     router.push("/");
+    router.refresh();
   }
 
   return (
@@ -589,7 +641,7 @@ export function Header({ initialUser = null }: HeaderProps) {
               )}
 
               {/* Account */}
-              <div className="relative z-[9999]">
+              <div className="relative z-[9999]" ref={userMenuRef}>
                 <button
                   onClick={() => { setUserMenuOpen(!userMenuOpen); setFocused(false); }}
                   className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-gray-600 hover:bg-gray-100 transition-colors"
