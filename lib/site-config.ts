@@ -25,6 +25,10 @@ export const siteConfig = {
   },
   /** Responsible person for § 55 RStV */
   responsible: "Eleasar Hadrossek, Wielandstraße 51, 67117 Limburgerhof",
+  /** Business owner (Inhaber) — not a GmbH */
+  ownerName: "Eleasar Hadrossek",
+  /** VAT identification number (Umsatzsteuer-Identifikationsnummer) */
+  vatId: "DE462603233",
   /** Business hours shown in header / footer */
   businessHours: "Mo–Fr 8–18 Uhr",
 } as const;

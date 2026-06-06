@@ -7,11 +7,12 @@ import type { Metadata } from "next";
 export const metadata: Metadata = { title: `Impressum | ${siteConfig.siteName}` };
 
 export default function ImpressumPage() {
-  const { address, phone, supportEmail, siteName, responsible } = siteConfig;
+  const { address, phone, supportEmail, siteName, ownerName, vatId, responsible } = siteConfig;
   return (
     <StaticPage title="Impressum" subtitle="Angaben gemäß § 5 TMG">
       <Section title="Unternehmensangaben">
         <P>{siteName}</P>
+        <P>Inhaber: {ownerName}</P>
         <P>{address.street}</P>
         <P>{address.city}</P>
         <P>{address.country}</P>
@@ -27,15 +28,9 @@ export default function ImpressumPage() {
         </P>
       </Section>
 
-      <Section title="Handelsregister">
-        <P>Registergericht: Amtsgericht Speyer</P>
-        <P>Registernummer: HRB – (wird nach Eintragung ergänzt)</P>
-      </Section>
-
       <Section title="Umsatzsteuer-ID">
         <P>
-          Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz: wird nach
-          Erteilung ergänzt.
+          Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: {vatId}
         </P>
       </Section>
 

@@ -18,6 +18,7 @@ const LINKS: Record<string, Array<{ label: string; href: string }>> = {
     { label: "Produktvergleich", href: "/compare" },
   ],
   "Service": [
+    { label: "IT-Services",        href: "/services" },
     { label: "Kaufberatung",      href: "/beratung" },
     { label: "B2B-Anfragen",      href: "/b2b" },
     { label: "Mein Konto",        href: "/account" },

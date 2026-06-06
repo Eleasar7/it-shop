@@ -14,6 +14,10 @@ import {
   Tag,
   Zap,
   Star,
+  Server,
+  Network,
+  HardDrive,
+  Users,
 } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { serializeProducts } from "@/lib/serializers";
@@ -503,7 +507,7 @@ export default async function HomePage() {
 
       {/* ── NEUHEITEN ── */}
       {newest.length > 0 && (
-        <div className="section pb-8 sm:pb-10">
+        <div className="section pb-6 sm:pb-8">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <h2 className="text-base sm:text-lg font-extrabold text-gray-900">Neu eingetroffen</h2>
             <Link href="/products?sortBy=newest" className="text-xs text-[#1a56db] font-semibold hover:underline flex items-center gap-1">
@@ -517,6 +521,70 @@ export default async function HomePage() {
           </div>
         </div>
       )}
+
+      {/* ── IT-SERVICES PROMO ── */}
+      <div className="section pb-8 sm:pb-10">
+        <div className="bg-white border border-[#e8eaed] rounded-xl overflow-hidden">
+          {/* Blue top accent bar */}
+          <div className="h-1 bg-[#1a56db]" />
+          <div className="p-5 lg:p-6">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center gap-5 lg:gap-8">
+
+              {/* Left — text content */}
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <Server size={14} className="text-[#1a56db]" />
+                  <span className="text-xs font-bold text-[#1a56db] uppercase tracking-wide">IT-Systemhaus</span>
+                </div>
+                <h2 className="text-xl font-extrabold text-gray-900 mb-2">IT-Projekt geplant?</h2>
+                <p className="text-sm text-gray-500 leading-relaxed max-w-lg mb-4">
+                  Von Hardware-Beschaffung über Netzwerke bis zu Server- und Storage-Lösungen –
+                  ENVETRA unterstützt Unternehmen bei moderner IT-Infrastruktur.
+                </p>
+                <ul className="space-y-2 mb-5">
+                  {[
+                    { icon: HardDrive, label: "IT-Hardware & Rollout" },
+                    { icon: Network,   label: "Netzwerk & WLAN" },
+                    { icon: Server,    label: "Server, NAS & Backup" },
+                    { icon: Users,     label: "Persönliche Beratung" },
+                  ].map(({ icon: Icon, label }) => (
+                    <li key={label} className="flex items-center gap-2.5 text-sm text-gray-700">
+                      <div className="w-5 h-5 bg-[#eff4ff] rounded flex items-center justify-center flex-shrink-0">
+                        <Icon size={11} className="text-[#1a56db]" />
+                      </div>
+                      {label}
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex flex-wrap gap-2.5">
+                  <Link href="/services" className="btn-primary text-sm py-2.5">
+                    IT-Services ansehen <ChevronRight size={14} />
+                  </Link>
+                  <Link href="/b2b" className="btn-secondary text-sm py-2.5">
+                    <FileText size={14} /> Projektanfrage stellen
+                  </Link>
+                </div>
+              </div>
+
+              {/* Right — service tiles */}
+              <div className="grid grid-cols-2 gap-2 flex-shrink-0 w-full lg:w-52">
+                {[
+                  { label: "IT-Hardware",  sub: "Beschaffung & Rollout" },
+                  { label: "Netzwerk",     sub: "WLAN & Switches" },
+                  { label: "Server & NAS", sub: "Storage & Backup" },
+                  { label: "IT-Beratung",  sub: "Herstellerunabhängig" },
+                ].map(({ label, sub }) => (
+                  <div key={label} className="bg-[#f8f9fa] border border-[#e8eaed] rounded-xl p-3">
+                    <p className="text-xs font-bold text-gray-900 leading-tight">{label}</p>
+                    <p className="text-[10px] text-gray-500 mt-0.5 leading-tight">{sub}</p>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

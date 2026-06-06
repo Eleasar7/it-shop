@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import {
   Search, ShoppingCart, User, Menu, X, ChevronDown, ChevronRight,
   LogOut, Package, LayoutDashboard, Phone, Truck,
-  Shield, FileText, GitCompare, Clock, Loader2, ArrowLeft,
+  Shield, FileText, GitCompare, Clock, Loader2, ArrowLeft, Headphones,
 } from "lucide-react";
 import { useCartStore } from "@/store/cart";
 import { useCompareStore } from "@/store/compare";
@@ -253,7 +253,6 @@ export function Header({ initialUser = null }: HeaderProps) {
   const [cartCount, setCartCount] = useState(0);
 
   const searchRef = useRef<HTMLDivElement>(null);
-  const userMenuRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLInputElement>(null);
   const menuTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { openCart, items } = useCartStore();
@@ -286,52 +285,13 @@ export function Header({ initialUser = null }: HeaderProps) {
   }, [mobileSearchOpen]);
 
   useEffect(() => {
+    if (initialUser !== null) return;
     const supabase = createClient();
-
-    // ── Helper: fetch profile from API, fall back to Supabase email ──────────
-    async function loadUser() {
-      const { data: { user: sbUser } } = await supabase.auth.getUser();
-      if (!sbUser) {
-        setUser(null);
-        return;
-      }
-
-      try {
-        const res = await fetch("/api/account/profile", { cache: "no-store" });
-        if (res.ok) {
-          const profile = await res.json();
-          setUser(profile);
-          return;
-        }
-      } catch {
-        // network error – fall through to minimal fallback
-      }
-
-      // Profile API failed but Supabase confirms user is logged in → show email
-      setUser({
-        id:      sbUser.id,
-        email:   sbUser.email ?? "",
-        name:    (sbUser.user_metadata?.name as string | null) ?? null,
-        role:    "USER",
-        company: null,
-        phone:   null,
-      });
-    }
-
-    // Always run on mount – don't skip even if initialUser was provided,
-    // because client-side navigation won't re-render the Server layout.
-    loadUser();
-
-    // Stay in sync with auth changes (login / logout in other tabs too)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session?.user) {
-        setUser(null);
-      } else {
-        loadUser();
-      }
+    supabase.auth.getUser().then(async ({ data: { user: u } }) => {
+      if (!u) { setUser(null); return; }
+      const res = await fetch("/api/account/profile");
+      if (res.ok) setUser(await res.json());
     });
-
-    return () => subscription.unsubscribe();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -368,16 +328,6 @@ export function Header({ initialUser = null }: HeaderProps) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  useEffect(() => {
-    function handler(e: MouseEvent) {
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
-        setUserMenuOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
     if (query.trim()) {
@@ -402,9 +352,7 @@ export function Header({ initialUser = null }: HeaderProps) {
     const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
-    setUserMenuOpen(false);
     router.push("/");
-    router.refresh();
   }
 
   return (
@@ -641,7 +589,7 @@ export function Header({ initialUser = null }: HeaderProps) {
               )}
 
               {/* Account */}
-              <div className="relative z-[9999]" ref={userMenuRef}>
+              <div className="relative z-[9999]">
                 <button
                   onClick={() => { setUserMenuOpen(!userMenuOpen); setFocused(false); }}
                   className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full text-gray-600 hover:bg-gray-100 transition-colors"
@@ -801,8 +749,15 @@ export function Header({ initialUser = null }: HeaderProps) {
               <div className="flex-1" />
 
               <Link
+                href="/services"
+                className="flex items-center gap-1.5 ml-3 px-3 py-1.5 text-[#3c4043] text-[12px] font-semibold rounded hover:bg-[#f1f3f4] transition-colors"
+              >
+                IT-Services
+              </Link>
+
+              <Link
                 href="/b2b"
-                className="flex items-center gap-1.5 ml-3 px-3 py-1.5 bg-[#1a56db] text-white text-[12px] font-bold rounded hover:bg-[#1043b2] transition-colors"
+                className="flex items-center gap-1.5 ml-2 px-3 py-1.5 bg-[#1a56db] text-white text-[12px] font-bold rounded hover:bg-[#1043b2] transition-colors"
               >
                 <FileText size={12} /> Angebot anfragen
               </Link>
@@ -915,6 +870,10 @@ export function Header({ initialUser = null }: HeaderProps) {
                   <Link href="/beratung" onClick={() => setMobileOpen(false)}
                     className="flex items-center gap-3 py-2.5 text-sm text-gray-700 hover:text-[#1a56db]">
                     <Phone size={15} className="text-gray-400" /> Kaufberatung
+                  </Link>
+                  <Link href="/services" onClick={() => setMobileOpen(false)}
+                    className="flex items-center gap-3 py-2.5 text-sm font-semibold text-[#1a56db]">
+                    <Headphones size={15} /> IT-Services & Systemhaus
                   </Link>
                   <Link href="/b2b" onClick={() => setMobileOpen(false)}
                     className="flex items-center gap-3 py-2.5 text-sm font-semibold text-[#1a56db]">
