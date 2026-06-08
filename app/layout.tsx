@@ -26,7 +26,12 @@ export const metadata: Metadata = {
   authors: [{ name: siteConfig.siteName, url: BASE_URL }],
   creator: siteConfig.siteName,
   publisher: siteConfig.siteName,
-  robots: {
+
+verification: {
+  google: "Hm4uS_eNYOt1-ZfntKVizkz1JxOpibDqDBKkNFNGT2Q",
+},
+
+robots: {
     index: true,
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large" },
